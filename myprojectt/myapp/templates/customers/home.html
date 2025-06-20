@@ -1,0 +1,1037 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+  body{
+    overflow-X:hidden;
+  }
+
+        .slideshow-container {
+            position: relative;
+            top:0;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            animation: kenburns 16s infinite;
+            background-size: cover;
+            background-position: center;
+            filter: sepia(0.3) contrast(1.1) brightness(0.9);
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .slide:nth-child(1) {
+          background-image: url("{% static 'images/bgg1.jpg' %}");
+            animation-delay: 0s;
+        }
+
+        .slide:nth-child(2) {
+            background-image:  url("{% static 'images/bgg2.jpg' %}");
+            animation-delay: 4s;
+        }
+
+        .slide:nth-child(3) {
+            background-image:  url("{% static 'images/bgg3.jpg' %}");
+            animation-delay: 8s;
+        }
+
+        .slide:nth-child(4) {
+             background-image:  url("{% static 'images/bgg1.jpg' %}");
+            animation-delay: 12s;
+        }
+
+        @keyframes kenburns {
+            0% {
+                opacity: 0;
+                transform: scale(1);
+            }
+            5% {
+                opacity: 1;
+            }
+            25% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+            30% {
+                opacity: 0;
+                transform: scale(1.1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1.1);
+            }
+        }
+
+        .firstcontent {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            z-index: 10;
+            width: 80%;
+            max-width: 800px;
+        }
+
+        .firstcontent h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .firstcontent p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            font-style: italic;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: rgba(255, 255, 255, 0.2);
+            color:white;
+            text-decoration: none;
+            border: 1px solid white;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+              background-image: linear-gradient(120deg,rgb(175, 224, 61) 0%,rgb(117, 240, 134) 100%);
+        }
+
+        .vintage-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            {% comment %} background: url('https://www.transparenttextures.com/patterns/rice-paper-3.png'); {% endcomment %}
+            opacity: 0.1;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        
+.carousel-container {
+      display: flex;
+
+    }
+
+    .carousel-image {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .carousel-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.5s ease-in-out;
+    }
+
+    .carousel-content {
+      flex: 1;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: start;
+      transition: all 0.5s ease-in-out;
+    }
+
+    .carousel-content h3 {
+      font-size: 2rem;
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .carousel-content p {
+      font-size: 1rem;
+      color: #555;
+      line-height:2;
+    }
+
+    .carousel-controls {
+      position: absolute;
+      bottom: 20px;
+      right: 30px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .carousel-controls button {
+      padding: 10px 15px;
+      border: none;
+    background: linear-gradient(744deg, #af40ff, #a9a1dc 60%, #05e7f7);
+       color:white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .carousel-controls button:hover {
+        background-image: linear-gradient(120deg,rgb(175, 224, 61) 0%,rgb(117, 240, 134) 100%);
+    }
+
+    .carousel-wrapper {
+      position: relative;
+      width: 100%;
+    }
+     .btn{
+    background: linear-gradient(744deg, #af40ff, #a9a1dc 60%, #05e7f7);
+    
+  }
+  .btn:hover{
+    background-image: linear-gradient(120deg,rgb(175, 224, 61) 0%,rgb(117, 240, 134) 100%);
+   
+  }
+
+    @media (max-width: 768px) {
+      .carousel-container {
+        flex-direction: column;
+      }
+
+      .carousel-image,
+      .carousel-content {
+        width: 100%;
+        flex: none;
+      }
+    }
+
+            
+.e-card {
+  margin: 100px auto;
+  background: transparent;
+  box-shadow: 0px 8px 28px -9px rgba(0,0,0,0.45);
+  position: relative;
+  width: 300px;
+  height: 350px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.wave {
+  position: absolute;
+  width: 540px;
+  height: 700px;
+  opacity: 0.6;
+  left: 0;
+  top: 0;
+  margin-left: -30%;
+  margin-top: -50%;
+  background: linear-gradient(744deg, #af40ff, #a9a1dc 60%, #05e7f7);
+}
+
+
+.infotop {
+  text-align: center;
+  font-size: 30px;
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
+  
+  font-weight: 600;
+}
+
+.name {
+  font-weight: 100;
+  position: relative;
+  color: white;
+}
+.name p{
+  font-size: large;
+  margin-top:30px;
+}
+
+.wave:nth-child(2),
+.wave:nth-child(3) {
+  top: 210px;
+}
+
+.playing .wave {
+  border-radius: 40%;
+  animation: wave 3000ms infinite linear;
+}
+
+.wave {
+  border-radius: 40%;
+  animation: wave 55s infinite linear;
+}
+
+.playing .wave:nth-child(2) {
+  animation-duration: 4000ms;
+}
+
+.wave:nth-child(2) {
+  animation-duration: 50s;
+}
+
+.playing .wave:nth-child(3) {
+  animation-duration: 5000ms;
+}
+
+.wave:nth-child(3) {
+  animation-duration: 45s;
+}
+
+@keyframes wave {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.service-card {
+    height:400px;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, border-top 0.3s ease;
+    border-top: 5px solid transparent;
+    background-color: white;
+}
+
+.service-card:hover {
+    transform: translateY(-8px); /* lift on hover */
+    border-top: 15px solid #af40ff;
+    background-color: #f9f9f9; 
+}
+.btn{
+    background: linear-gradient(744deg, #af40ff, #a9a1dc 60%, #05e7f7);
+    color:white;
+}
+h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: black;
+    
+    }
+       
+ h2::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: #af40ff;
+    border-radius: 2px;   
+        }
+
+   .car-card {
+    border: none;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .car-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .car-card img {
+    height: 220px;
+    object-fit: cover;
+    border-bottom: 1px solid #eee;
+  }
+
+  .car-card .card-title {
+    font-weight: bold;
+    font-size: 1.25rem;
+    color: #333;
+  }
+
+  .car-card .card-text {
+    color: #666;
+    font-size: 0.95rem;
+  }
+.testimonials-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color:black;
+           
+        }
+        
+        .section-header p {
+            font-size: 1.1rem;
+            color: #8d99ae;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .testimonial-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .testimonial-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(744deg, #af40ff, #a9a1dc 60%, #05e7f7);
+        }
+        
+        .quote-icon {
+            font-size: 2.5rem;
+            color:#af40ff;
+            margin-bottom: 20px;
+        }
+        
+        .testimonial-text {
+            font-size: 1rem;
+            color:  #2b2d42;
+            margin-bottom: 25px;
+            font-weight: 400;
+        }
+        
+        .customer-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .customer-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .customer-details h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        
+        .customer-details p {
+            font-size: 0.85rem;
+            color: #8d99ae;
+        }
+        
+        .rating {
+            margin-top: 5px;
+        }
+        
+        .rating i {
+            color: #ffc107;
+            font-size: 0.9rem;
+        }
+        
+        .stats-bar {
+     
+      display: flex;
+      justify-content:center;
+      align-items:center;
+      gap: 50px;
+      margin-top:50px;
+     
+    }
+
+    .stat-item {
+      text-align: center;
+       background: white;
+      padding: 40px 60px;
+      border-radius: 12px;
+       box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+
+    .stat-number {
+      font-size: 36px;
+      font-weight: bold;
+      color: rgb(68, 63, 68);
+    }
+
+    .stat-label {
+      font-size: 16px;
+      color: #555;
+      margin-top: 5px;
+    }
+        
+    .marquee-wrapper {
+      position: relative;
+      width:100vw;
+      height: 100px; /* Set desired height */
+      overflow: hidden;
+    }
+
+    .marquee-img {
+      position: absolute;
+      top: 0;
+      left: -100%; /* Start from left off-screen */
+      width: 100vw;
+      height: 150%;
+      object-fit: contain;
+
+      animation: scrollRight 20s linear infinite;
+    }
+
+    @keyframes scrollRight {
+      0% {
+        transform: translateX(0%);
+      }
+      100% {
+        transform: translateX(200%);
+      }
+    }
+        
+        @media (max-width: 768px) {
+            .section-header h2 {
+                font-size: 2rem;
+            }
+            
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-bar {
+                gap: 15px;
+                display:block;
+            }
+            
+            .stat-item {
+                min-width: 120px;
+                padding: 15px 20px;
+            }
+            
+            .stat-number {
+                font-size: 1.5rem;
+            }
+        }
+
+</style>
+<!-- AOS CSS -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css"/>
+
+<!-- Hero Section -->
+<section>
+    <div class="slideshow-container">
+        <div class="slide"></div>
+        <div class="slide"></div>
+        <div class="slide"></div>
+        <div class="slide"></div>
+        
+        <div class="vintage-overlay"></div>
+        
+        <div class="firstcontent">
+            <h1>Your Journey Begins Here</h1>
+            <p>Explore India & Beyond with Comfort and Luxury</p>
+            <a href="{% url 'domestic' %}" class="btn">Explore Tours</a>
+        </div>
+        
+       
+    </div>
+</section>
+
+<!-- Featured Packages -->
+<section class="py-5">
+<div class="container my-5">
+     <h2 class="mb-5 text-center" data-aos="fade-up">Top Destinations</h2>
+   <div class="carousel-wrapper mt-2">
+     <div class="carousel-container" id="carousel">
+      <div class="carousel-image">
+      <img id="carousel-img" src="{% static 'images/kodaiii.jpg' %}" alt="Image">
+    </div>
+    <div class="carousel-content">
+      <h3 id="carousel-title">Kodaikanal</h3>
+      <p id="carousel-text">If you’ve ever dreamt of being pampered by the lulling lullabies of Nature, and being embraced affectionately by the cool breeze that flows in from picturesque hill slopes, then Kodaikanal is indeed the place to be in to make those dreams come true. The scenic beauty of Kodaikanal never ceases to amaze travellers</p>
+    </div>
+  </div>
+    
+
+  <div class="carousel-controls">
+    <button onclick="prevSlide()">Prev</button>
+    <button onclick="nextSlide()">Next</button>
+  </div>
+</div>
+</div>
+</section>
+
+<!-- Why Choose Us -->
+<section class="text-center py-5" style="background: url('{% static 'images/bg1.jpg' %}') no-repeat center center; background-size: cover;">
+  <div class="container text-center">
+     <h2 class="mb-4" data-aos="fade-up">Why Choose us</h2>
+    <div class="row text-center">
+      
+      <div class="col-md-3 mb-4" data-aos="zoom-in">
+        <div class="e-card playing">
+       <div class="image"></div>
+      <div class="wave"></div>
+      <div class="wave"></div>
+     <div class="wave"></div>
+      <div class="infotop">
+       <i class="fa-solid fa-car-rear text-primary"></i>
+<br>
+<div class="name">
+    <h5 class="fw-semibold">Well luxuries fleet</h5>
+    <p class="text-white">Choose from sedans, SUVs, tempo travellers & luxury cars.</p>
+</div>
+  </div>
+</div>
+      </div>
+
+     <div class="col-md-3 mb-4" data-aos="zoom-in">
+    
+        <div class="e-card playing">
+       <div class="image"></div>
+      <div class="wave"></div>
+      <div class="wave"></div>
+     <div class="wave"></div>
+      <div class="infotop">
+     
+       <i class="bi bi-person-check-fill fs-1 text-success mb-2"></i>
+<br>
+<div class="name">
+     <h5 class="fw-semibold">Verified Drivers</h5>
+    <p class="text-white">Choose from sedans, SUVs, tempo travellers & luxury cars.</p>
+</div>
+  </div>
+</div>
+      </div>
+
+       <div class="col-md-3 mb-4" data-aos="zoom-in">
+        <div class="e-card playing">
+       <div class="image"></div>
+      <div class="wave"></div>
+      <div class="wave"></div>
+     <div class="wave"></div>
+      <div class="infotop">
+        <i class="bi bi-clock-history fs-1 text-warning mb-2"></i>
+<br>
+<div class="name">
+          <h5 class="fw-semibold">24/7 Availability</h5>
+          <p class="text-white">Round-the-clock service for all your travel needs.</p>
+</div>
+  </div>
+</div>
+      </div>
+       <div class="col-md-3 mb-4" data-aos="zoom-in">
+        <div class="e-card playing">
+       <div class="image"></div>
+      <div class="wave"></div>
+      <div class="wave"></div>
+     <div class="wave"></div>
+      <div class="infotop">
+       
+ <i class="bi bi-geo-alt-fill fs-1 text-danger mb-2"></i>
+<br>
+<div class="name">
+          <h5 class="fw-semibold">Pan-Tamil Nadu Reach</h5>
+          <p class="text-white">Serving all major cities, towns, and destinations.</p>
+</div>
+  </div>
+</div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--services-->
+<section class="py-5 bg-light">
+    <div class="container text-center">
+        <h2 class="mb-4" data-aos="fade-up">Our Services</h2>
+        <div class="swiper mySwiper" data-aos="zoom-in-up">
+            <div class="swiper-wrapper">
+
+                <!-- Local Trip -->
+                <div class="swiper-slide" data-aos="fade-up" data-aos-delay="100">
+                    <div class="service-card shadow-sm">
+                        <img src="{% static 'images/car5.jpg' %}" class="card-img-top" alt="Local Trip">
+                        <div class="card-body mt-3">
+                            <h5 class="card-title">Local Trip</h5>
+                            <p class="card-text">Reliable city rides with flexible hours and trained drivers.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Outstation -->
+                <div class="swiper-slide" data-aos="fade-up" data-aos-delay="200">
+                    <div class="service-card shadow-sm">
+                        <img src="{% static 'images/carrs4.jpg' %}" class="card-img-top" alt="Outstation">
+                        <div class="card-body mt-3">
+                            <h5 class="card-title">Outstation</h5>
+                            <p class="card-text">Comfortable long-distance travel to any city in India.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hourly Rental -->
+                <div class="swiper-slide" data-aos="fade-up" data-aos-delay="300">
+                    <div class="service-card shadow-sm">
+                        <img src="{% static 'images/carrs3.jpg' %}" class="card-img-top" alt="Hourly Rental">
+                        <div class="card-body mt-3">
+                            <h5 class="card-title">Hourly Rental</h5>
+                            <p class="card-text">Pay only for the hours you need. Flexible packages available.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Corporate Travel -->
+                <div class="swiper-slide" data-aos="fade-up" data-aos-delay="400">
+                    <div class="service-card shadow-sm">
+                        <img src="{% static 'images/carrs2.jpg' %}" class="card-img-top" alt="Corporate Travel">
+                        <div class="card-body mt-3">
+                            <h5 class="card-title">Corporate Travel</h5>
+                            <p class="card-text">Professional transport solutions for your business.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Airport Cab -->
+                <div class="swiper-slide" data-aos="fade-up" data-aos-delay="500">
+                    <div class="service-card shadow-sm">
+                        <img src="{% static 'images/carrs1.jpg' %}" class="card-img-top" alt="Airport Cab">
+                        <div class="card-body mt-3">
+                            <h5 class="card-title">Airport Cab</h5>
+                            <p class="card-text">On-time airport pickups and drops with tracking support.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+           
+        </div>
+    </div>
+</section>
+
+<!-- Available Cars -->
+<section class="py-5 bg-light">
+  <div class="container text-center">
+    <h2 class="mb-4" data-aos="fade-up">Available Cars</h2>
+    <div class="row">
+
+      <!-- Car 1 -->
+         <div class="col-md-4 mb-4" data-aos="fade-up">
+        <div class="card car-card shadow-sm h-100">
+          <img src="{% static 'images/sedan.avif' %}" class="card-img-top" alt="Sedan">
+          <div class="card-body text-center">
+            <h5 class="card-title">Sedan</h5>
+            <p class="card-text">Ideal for local travel and city rides. Comfortable & efficient.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="card car-card shadow-sm h-100">
+          <img src="{% static 'images/suv.jpg' %}" class="card-img-top" alt="SUV">
+          <div class="card-body text-center">
+            <h5 class="card-title">SUV</h5>
+            <p class="card-text">Spacious and perfect for family outstation trips.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Car Card 3 -->
+      <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="card car-card shadow-sm h-100">
+          <img src="{% static 'images/tempo.jpg' %}" class="card-img-top" alt="Tempo Traveller">
+          <div class="card-body text-center">
+            <h5 class="card-title">Tempo Traveller</h5>
+            <p class="card-text">Great for group tours. Spacious and comfortable seating.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- View More Button -->
+    <div class="mt-4" data-aos="fade-up">
+      <a href="{% url 'all_cars' %}" class="btn px-4 py-2">View More Cars</a>
+    </div>
+  </div>
+</section>
+
+<section id="testsection">
+ <div class="testimonials-container">
+        <div class="section-header">
+             <h2 class="text-center mb-4 " data-aos="fade-up">Trusted by Thousands</h2>
+            <p>Don't just take our word for it. Here's what our customers say about their experience.</p>
+        </div>
+        
+        <div class="testimonials-grid">
+            <!-- Testimonial 1 -->
+            <div class="testimonial-card">
+                <div class="quote-icon">
+                    <i class="fas fa-quote-left"></i>
+                </div>
+                <p class="testimonial-text">
+                    This platform has completely transformed how we do business. The automation features saved us over 20 hours per week, allowing our team to focus on strategic work.
+                </p>
+                <div class="customer-info">
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah Johnson" class="customer-avatar">
+                    <div class="customer-details">
+                        <h4>Uma</h4>
+                        <p></p>
+                        <div class="rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Testimonial 2 -->
+            <div class="testimonial-card">
+                <div class="quote-icon">
+                    <i class="fas fa-quote-left"></i>
+                </div>
+                <p class="testimonial-text">
+                    The customer support is exceptional. Any issues we've had were resolved within hours. The platform is intuitive and has everything we need in one place.
+                </p>
+                <div class="customer-info">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Michael Chen" class="customer-avatar">
+                    <div class="customer-details">
+                        <h4>Kavi</h4>
+                        <p></p>
+                        <div class="rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Testimonial 3 -->
+            <div class="testimonial-card">
+                <div class="quote-icon">
+                    <i class="fas fa-quote-left"></i>
+                </div>
+                <p class="testimonial-text">
+                    We saw a 40% increase in conversions after implementing their solution. The analytics dashboard alone is worth the price - so much insight in one place.
+                </p>
+                <div class="customer-info">
+                    <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Emma Rodriguez" class="customer-avatar">
+                    <div class="customer-details">
+                        <h4>Nagesh</h4>
+                        <p></p>
+                        <div class="rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stats-bar">
+             <div class="stat-item">
+      <div class="stat-number" data-target="4.9" data-suffix="/5" data-decimals="1">0</div>
+      <div class="stat-label">Average Rating</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" data-target="98" data-suffix="%" data-decimals="0">0</div>
+      <div class="stat-label">Customer Satisfaction</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" data-target="10000" data-suffix="+" data-decimals="0">0</div>
+      <div class="stat-label">Happy Customers</div>
+    </div>
+        </div>
+    </div>
+</section>
+
+   <div class="marquee-wrapper">
+ 
+  <img class="marquee-img" src="{% static 'images/gifimage.webp' %}" alt="Scrolling Image">
+
+</div>
+    
+
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+
+<!-- Swiper Init -->
+<script>
+  var swiper = new Swiper(".mySwiper", {
+    slidesPerView: 1,
+    spaceBetween: 20,
+    loop: true,
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true,
+    },
+    autoplay: {
+      delay: 3000,
+    },
+    breakpoints: {
+      768: { slidesPerView: 2 },
+      992: { slidesPerView: 3 },
+    }
+  });
+</script>
+
+
+<!-- AOS Script -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({
+    duration: 800,
+    once: true
+  });
+</script>
+
+
+<script>
+  const data = [
+    {
+      img: "{% static 'images/ootyyy.jpg' %}",
+      title: 'Ooty',
+      text: 'Ooty, the Queen of Hill stations, welcomes you with mesmerising meadows, soothing environment, cool weather and a wide array of sightseeing places to visit and admire. Each tourist attraction in Ooty promises a unique and lively experience that will leave you in awe for many days to come'
+    },
+    {
+      img: "{% static 'images/mdu.jpg' %}" ,
+      title: 'Madurai',
+      text: 'Madurai is built around the Koodal Azhagar temple and Meenakshi Temple, which acted as the geographic and ritual centre of the ancient city of Madurai. The city is divided into a number of concentric quadrangular streets around the temple.[60] Viswanatha Nayak (1529–64 CE), the first Madurai Nayak king, redesigned the city in accordance with the principles laid out by Shilpa Shastras'
+    },
+ 
+    {
+      img: "{% static 'images/kanyakumari.jpg' %}",
+      title: 'Kanniyakumari',
+      text: 'Kanniyakumari is a special destination in many different ways. It is the southernmost tip of the mainland of India. Three major water bodies – the Arabian Sea, Bay of Bengal and the Indian Ocean – converge right here in Kanniyakumari. Such a geographically blessed destination is rare and these features make Kanniyakumari  one of the most visited places in India annually. '
+    },
+       {
+      img: "{% static 'images/thanjavur.jpg' %}",
+      title: 'Thanjavur',
+      text: 'Stretches of temples that speak volumes about the brilliance of Dravidian architecture – that is what Thanjavur is in one glimpse. However this historic city is much more than that. Arrive at the destination and be wondered about the breadth of lush green paddy fields that offer an absolute feast to the eyes. Then comes the sheer splendour of the world-famous Thanjavur Paintings. Sculptures, art, cuisine, hospitality – you will for sure be lost for words. '
+    }
+  ];
+
+  let index = 0;
+  let intervalId;
+
+  function updateSlide() {
+    const img = document.getElementById('carousel-img');
+    const title = document.getElementById('carousel-title');
+    const text = document.getElementById('carousel-text');
+
+    img.style.opacity = 0;
+    setTimeout(() => {
+      img.src = data[index].img;
+      title.textContent = data[index].title;
+      text.textContent = data[index].text;
+      img.style.opacity = 1;
+    }, 300);
+  }
+
+  function nextSlide() {
+    index = (index + 1) % data.length;
+    updateSlide();
+  }
+
+  function prevSlide() {
+    index = (index - 1 + data.length) % data.length;
+    updateSlide();
+  }
+
+  function startAutoSlide() {
+    intervalId = setInterval(nextSlide, 4000);
+  }
+
+  function resetAutoSlide() {
+    clearInterval(intervalId);
+    startAutoSlide();
+  }
+
+  // Restart auto-slide on manual button click
+  document.querySelectorAll('.carousel-controls button').forEach(button => {
+    button.addEventListener('click', resetAutoSlide);
+  });
+
+  startAutoSlide(); // Start auto on load
+
+
+
+    const counters = document.querySelectorAll('.stat-number');
+
+    counters.forEach(counter => {
+      const target = parseFloat(counter.getAttribute('data-target'));
+      const decimals = parseInt(counter.getAttribute('data-decimals')) || 0;
+      const suffix = counter.getAttribute('data-suffix') || '';
+      let count = 0;
+      const speed = 200;
+
+      const increment = target / speed;
+
+      const updateCounter = () => {
+        if (count < target) {
+          count += increment;
+          counter.innerText = parseFloat(count).toFixed(decimals) + suffix;
+          requestAnimationFrame(updateCounter);
+        } else {
+          counter.innerText = target.toFixed(decimals) + suffix;
+        }
+      };
+
+      updateCounter();
+    });
+</script>
+
+
+{% endblock %}

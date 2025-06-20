@@ -1,0 +1,1103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{{ destination.name }} Tour Itinerary</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+      :root {
+      --primary: #8e44ad;
+      --secondary: #e67e22;
+      --accent: #27ae60;
+      --light: #f5f6fa;
+      --dark: #2c3e50;
+      --text: #34495e;
+    }
+
+    body {
+      background-image: url("{% static 'images/features-background1.jpg' %}");
+      color: var(--text);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .hero {
+      position: relative;
+      height: 60vh;
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+    
+    #map {
+      height: 100%;
+      width: 100%;
+      z-index: 1;
+    }
+    
+    .destination-header {
+      margin-bottom: 2rem;
+    }
+    
+    .destination-title {
+      color: var(--primary);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    
+    .destination-tagline {
+      color: var(--dark);
+      font-size: 1.2rem;
+    }
+    
+    .car-marker {
+      position: relative;
+      transform-origin: center;
+      transition: transform 0.2s ease-out;
+    }
+
+    .car-marker img {
+      width: 48px;
+      height: 48px;
+      transform-origin: center center;
+      filter: drop-shadow(0 0 5px rgba(0,0,0,0.3));
+      animation: bounce 0.5s infinite alternate;
+    }
+    
+    @keyframes bounce {
+      from { transform: translateY(0) rotate(var(--rotation)); }
+      to { transform: translateY(-1px) rotate(var(--rotation)); }
+    }
+
+    .day-card {
+      border-left: 5px solid var(--primary);
+      background-color: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+      margin-bottom: 40px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .day-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .day-number {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .highlight-box {
+      background-color: rgba(231, 76, 60, 0.05);
+      border-left: 4px solid var(--secondary);
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 15px;
+      color: var(--dark);
+      font-style: italic;
+    }
+
+    .btn-book {
+      background: var(--primary);
+      color: white;
+      padding: 12px 28px;
+      font-size: 1.1rem;
+      border-radius: 50px;
+      border: none;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+
+    .btn-book:hover {
+      background: var(--secondary);
+    }
+
+    .section-title h2 {
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    .section-title p {
+      color: var(--dark);
+    }
+    
+    .custom-back-btn {
+      border: 2px solid var(--secondary);
+      color: var(--secondary);
+      background-color: transparent;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      border-radius: 50px;
+      padding: 8px 20px;
+    }
+
+    .custom-back-btn:hover {
+      background-color: var(--secondary);
+      color: white;
+    }
+
+    .custom-back-btn svg {
+      transition: transform 0.3s ease;
+    }
+
+    .custom-back-btn:hover svg {
+      transform: translateX(-4px);
+    }
+
+    /* Route selector styles */
+    .route-selector {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .route-selector select {
+      padding: 5px 10px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
+
+    /* Custom red location icon */
+    .red-icon {
+      background-color: red;
+      border-radius: 50%;
+      border: 2px solid white;
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    .red-icon::after {
+      content: "";
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 8px solid red;
+    }
+
+    /* Intermediate point markers */
+    .waypoint-icon {
+      background-color: #3498db;
+      border-radius: 50%;
+      border: 2px solid white;
+      width: 12px;
+      height: 12px;
+      display: block;
+    }
+    
+    /* Route point tags */
+    .route-point-tag {
+      position: absolute;
+      background: white;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      white-space: nowrap;
+      transform: translate(-50%, -100%);
+      margin-top: -10px;
+      z-index: 100;
+    }
+    
+    .route-point-tag::after {
+      content: "";
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 4px solid white;
+    }
+    
+    .distance-badge {
+      background-color: var(--accent);
+      color: white;
+      font-size: 10px;
+      padding: 2px 4px;
+      border-radius: 4px;
+      margin-left: 4px;
+    }
+    
+    /* Destination tag styling */
+    .destination-tag {
+      background-color: rgba(255, 0, 0, 0.1);
+      border-left: 3px solid red;
+    }
+
+    /* Hide routing machine controls */
+    .leaflet-routing-container {
+      display: none;
+    }
+
+    /* Confetti canvas */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1000;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+   <!-- Hero Section with Map -->
+  <section class="hero">
+    <div id="map"></div>
+    <!-- Route selector -->
+    <div id="routeSelector" class="route-selector" style="display: none;">
+      <label for="routeOption">Select Route:</label>
+      <select id="routeOption">
+        <option value="fastest">Fastest Route</option>
+        <option value="scenic">Scenic Route</option>
+        <option value="historic">Historic Route</option>
+      </select>
+    </div>
+  </section>
+  
+  <div class="container">
+    <!-- Destination Header -->
+    <div class="destination-header">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="destination-title">{{ destination.name }} Tour</h1>
+          <p class="destination-tagline">{{ destination.tagline }}</p>
+        </div>
+        <div>
+          <a href="{% url 'all_international' %}" class="btn custom-back-btn d-inline-flex align-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left-circle me-2" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0-1A6 6 0 1 0 8 2a6 6 0 0 0 0 12z"/>
+              <path fill-rule="evenodd" d="M8.354 11.354a.5.5 0 0 1-.708 0L5.5 9.207l-.354.353a.5.5 0 0 1-.708-.707l1.5-1.5a.5.5 0 0 1 .708 0l1.5 1.5a.5.5 0 0 1 0 .707z"/>
+              <path fill-rule="evenodd" d="M11.5 8a.5.5 0 0 1-.5.5H5a.5.5 0 0 1 0-1h6a.5.5 0 0 1 .5.5z"/>
+            </svg>
+            Back to All Destinations
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <section class="py-5">
+      <div class="container">
+        <div class="text-center mb-5 section-title">
+          <h2>{{ destination.duration }} Itinerary</h2>
+          <p>Explore the charm of {{ destination.name }} day by day</p>
+        </div>
+
+        {% for day in destination.itinerary %}
+          <div class="day-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+            <div class="day-number">Day {{ day.day }}: {{ day.title }}</div>
+            <ul class="mb-3">
+              {% for activity in day.activities %}
+                <li>{{ activity }}</li>
+              {% endfor %}
+            </ul>
+            <div class="highlight-box">
+              <strong>Highlight:</strong> {{ day.highlight }}
+            </div>
+          </div>
+        {% endfor %}
+
+        <div class="text-center mt-5">
+          <a href="https://forms.gle/qKpo3btNDZfFWBXs8" class="btn-book">Book This Tour</a>
+        </div>
+      </div>
+    </section>
+  </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+
+  <script>
+    AOS.init();
+
+    // International destinations coordinates with multiple routes
+    const DESTINATION_COORDINATES = {
+      "Singapore": { 
+        coords: [1.3521, 103.8198],
+        routes: {
+          fastest: [
+            {coords: [9.9252, 78.1198], name: "Madurai"},
+            {coords: [13.0827, 80.2707], name: "Chennai"},
+            {coords: [1.3521, 103.8198], name: "Singapore"}
+          ],
+          scenic: [
+            {coords: [9.9252, 78.1198], name: "Madurai"},
+            {coords: [12.9716, 77.5946], name: "Bangalore"},
+            {coords: [18.5204, 73.8567], name: "Pune"},
+            {coords: [1.3521, 103.8198], name: "Singapore"}
+          ],
+          historic: [
+            {coords: [9.9252, 78.1198], name: "Madurai"},
+            {coords: [12.9716, 77.5946], name: "Bangalore"},
+            {coords: [17.3850, 78.4867], name: "Hyderabad"},
+            {coords: [22.5726, 88.3639], name: "Kolkata"},
+            {coords: [1.3521, 103.8198], name: "Singapore"}
+          ]
+        }
+      },
+      "Tokyo": { 
+        coords: [35.6762, 139.6503],
+        routes: {
+          fastest: [
+            {coords: [9.9252, 78.1198], name: "Madurai"},
+            {coords: [13.0827, 80.2707], name: "Chennai"},
+            {coords: [22.3193, 114.1694], name: "Hong Kong"},
+            {coords: [35.6762, 139.6503], name: "Tokyo"}
+          ],
+          scenic: [
+            {coords: [9.9252, 78.1198], name: "Madurai"},
+            {coords: [12.9716, 77.5946], name: "Bangalore"},
+            {coords: [19.0760, 72.8777], name: "Mumbai"},
+            {coords: [1.3521, 103.8198], name: "Singapore"},
+            {coords: [35.6762, 139.6503], name: "Tokyo"}
+          ],
+          historic: [
+            {coords: [9.9252, 78.1198], name: "Madurai"},
+            {coords: [28.6139, 77.2090], name: "Delhi"},
+            {coords: [39.9042, 116.4074], name: "Beijing"},
+            {coords: [35.6762, 139.6503], name: "Tokyo"}
+          ]
+        }
+      },
+      "New York": { 
+        coords: [40.7128, -74.0060],
+        routes: {
+          fastest: [
+            {coords: [9.9252, 78.1198], name: "Madurai"},
+            {coords: [13.0827, 80.2707], name: "Chennai"},
+            {coords: [51.5074, -0.1278], name: "London"},
+            {coords: [40.7128, -74.0060], name: "New York"}
+          ],
+          scenic: [
+            {coords: [9.9252, 78.1198], name: "Madurai"},
+            {coords: [19.0760, 72.8777], name: "Mumbai"},
+            {coords: [48.8566, 2.3522], name: "Paris"},
+            {coords: [40.7128, -74.0060], name: "New York"}
+          ],
+          historic: [
+            {coords: [9.9252, 78.1198], name: "Madurai"},
+            {coords: [28.6139, 77.2090], name: "Delhi"},
+            {coords: [41.0082, 28.9784], name: "Istanbul"},
+            {coords: [40.7128, -74.0060], name: "New York"}
+          ]
+        }
+      },
+      "Paris": {
+    coords: [48.8566, 2.3522],
+    routes: {
+      fastest: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [13.0827, 80.2707], name: "Chennai"},
+        {coords: [48.8566, 2.3522], name: "Paris"}
+      ],
+      scenic: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [19.0760, 72.8777], name: "Mumbai"},
+        {coords: [51.5074, -0.1278], name: "London"},
+        {coords: [48.8566, 2.3522], name: "Paris"}
+      ]
+    }
+  },
+  "Rome": {
+    coords: [41.9028, 12.4964],
+    routes: {
+      fastest: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [13.0827, 80.2707], name: "Chennai"},
+        {coords: [41.9028, 12.4964], name: "Rome"}
+      ],
+      historic: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [28.6139, 77.2090], name: "Delhi"},
+        {coords: [41.0082, 28.9784], name: "Istanbul"},
+        {coords: [41.9028, 12.4964], name: "Rome"}
+      ]
+    }
+  },
+  "Santorini": {
+    coords: [36.3932, 25.4615],
+    routes: {
+      scenic: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [19.0760, 72.8777], name: "Mumbai"},
+        {coords: [38.7223, 26.0104], name: "Athens"},
+        {coords: [36.3932, 25.4615], name: "Santorini"}
+      ]
+    }
+  },
+  "Barcelona": {
+    coords: [41.3851, 2.1734],
+    routes: {
+      fastest: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [13.0827, 80.2707], name: "Chennai"},
+        {coords: [41.3851, 2.1734], name: "Barcelona"}
+      ]
+    }
+  },
+  "Swiss Alps": {
+    coords: [46.5584, 8.5606],
+    routes: {
+      scenic: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [19.0760, 72.8777], name: "Mumbai"},
+        {coords: [48.1351, 11.5820], name: "Munich"},
+        {coords: [46.5584, 8.5606], name: "Swiss Alps"}
+      ]
+    }
+  },
+  "Amsterdam": {
+    coords: [52.3676, 4.9041],
+    routes: {
+      fastest: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [13.0827, 80.2707], name: "Chennai"},
+        {coords: [52.3676, 4.9041], name: "Amsterdam"}
+      ]
+    }
+  },
+  "Bali": {
+    coords: [-8.4095, 115.1889],
+    routes: {
+      scenic: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [1.3521, 103.8198], name: "Singapore"},
+        {coords: [-8.4095, 115.1889], name: "Bali"}
+      ]
+    }
+  },
+  "Dubai": {
+    coords: [25.2048, 55.2708],
+    routes: {
+      fastest: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [25.2048, 55.2708], name: "Dubai"}
+      ]
+    }
+  },
+  "Seoul": {
+    coords: [37.5665, 126.9780],
+    routes: {
+      fastest: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [13.0827, 80.2707], name: "Chennai"},
+        {coords: [22.3193, 114.1694], name: "Hong Kong"},
+        {coords: [37.5665, 126.9780], name: "Seoul"}
+      ]
+    }
+  },
+  "Hong Kong": {
+    coords: [22.3193, 114.1694],
+    routes: {
+      fastest: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [13.0827, 80.2707], name: "Chennai"},
+        {coords: [22.3193, 114.1694], name: "Hong Kong"}
+      ]
+    }
+  },
+  "Los Angeles": {
+    coords: [34.0522, -118.2437],
+    routes: {
+      fastest: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [19.0760, 72.8777], name: "Mumbai"},
+        {coords: [34.0522, -118.2437], name: "Los Angeles"}
+      ]
+    }
+  },
+  "Machu Picchu": {
+    coords: [-13.1631, -72.5450],
+    routes: {
+      scenic: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [19.0760, 72.8777], name: "Mumbai"},
+        {coords: [-23.5505, -46.6333], name: "São Paulo"},
+        {coords: [-13.1631, -72.5450], name: "Machu Picchu"}
+      ]
+    }
+  },
+  "Rio de Janeiro": {
+    coords: [-22.9068, -43.1729],
+    routes: {
+      fastest: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [19.0760, 72.8777], name: "Mumbai"},
+        {coords: [-22.9068, -43.1729], name: "Rio de Janeiro"}
+      ]
+    }
+  },
+  "Niagara Falls": {
+    coords: [43.0896, -79.0849],
+    routes: {
+      fastest: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [13.0827, 80.2707], name: "Chennai"},
+        {coords: [40.7128, -74.0060], name: "New York"},
+        {coords: [43.0896, -79.0849], name: "Niagara Falls"}
+      ]
+    }
+  },
+  "Toronto": {
+    coords: [43.6532, -79.3832],
+    routes: {
+      fastest: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [13.0827, 80.2707], name: "Chennai"},
+        {coords: [43.6532, -79.3832], name: "Toronto"}
+      ]
+    }
+  },
+  "Cape Town": {
+    coords: [-33.9249, 18.4241],
+    routes: {
+      scenic: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [-4.0435, 39.6682], name: "Mombasa"},
+        {coords: [-33.9249, 18.4241], name: "Cape Town"}
+      ]
+    }
+  },
+  "Marrakech": {
+    coords: [31.6295, -7.9811],
+    routes: {
+      fastest: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [28.6139, 77.2090], name: "Delhi"},
+        {coords: [31.6295, -7.9811], name: "Marrakech"}
+      ]
+    }
+  },
+  "Victoria Falls": {
+    coords: [-17.9243, 25.8572],
+    routes: {
+      scenic: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [-1.2921, 36.8219], name: "Nairobi"},
+        {coords: [-17.9243, 25.8572], name: "Victoria Falls"}
+      ]
+    }
+  },
+  "Maasai Mara": {
+    coords: [-1.5816, 35.4378],
+    routes: {
+      fastest: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [-1.2921, 36.8219], name: "Nairobi"},
+        {coords: [-1.5816, 35.4378], name: "Maasai Mara"}
+      ]
+    }
+  },
+  "Sydney": {
+    coords: [-33.8688, 151.2093],
+    routes: {
+      fastest: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [1.3521, 103.8198], name: "Singapore"},
+        {coords: [-33.8688, 151.2093], name: "Sydney"}
+      ]
+    }
+  },
+  "Queenstown": {
+    coords: [-45.0312, 168.6626],
+    routes: {
+      scenic: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [-33.8688, 151.2093], name: "Sydney"},
+        {coords: [-45.0312, 168.6626], name: "Queenstown"}
+      ]
+    }
+  },
+  "Bora Bora": {
+    coords: [-16.5004, -151.7415],
+    routes: {
+      scenic: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [-21.1343, -175.2018], name: "Tonga"},
+        {coords: [-16.5004, -151.7415], name: "Bora Bora"}
+      ]
+    }
+  },
+  "Iceland": {
+    coords: [64.9631, -19.0208],
+    routes: {
+      scenic: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [51.5074, -0.1278], name: "London"},
+        {coords: [64.9631, -19.0208], name: "Iceland"}
+      ]
+    }
+  },
+  "Prague": {
+    coords: [50.0755, 14.4378],
+    routes: {
+      fastest: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [13.0827, 80.2707], name: "Chennai"},
+        {coords: [50.0755, 14.4378], name: "Prague"}
+      ]
+    }
+  },
+  "Kyoto": {
+    coords: [35.0116, 135.7681],
+    routes: {
+      fastest: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [35.6762, 139.6503], name: "Tokyo"},
+        {coords: [35.0116, 135.7681], name: "Kyoto"}
+      ]
+    }
+  },
+  "Cairo": {
+    coords: [30.0444, 31.2357],
+    routes: {
+      fastest: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [28.6139, 77.2090], name: "Delhi"},
+        {coords: [30.0444, 31.2357], name: "Cairo"}
+      ]
+    }
+  },
+  "Maldives": {
+    coords: [3.2028, 73.2207],
+    routes: {
+      fastest: [
+        {coords: [9.9252, 78.1198], name: "Madurai"},
+        {coords: [3.2028, 73.2207], name: "Maldives"}
+      ]
+    }
+  }
+    };
+
+    // Get destination name from page title
+    const destinationName = document.querySelector('.destination-title').textContent.replace(' Tour', '').trim();
+    const destinationInfo = DESTINATION_COORDINATES[destinationName] || { 
+      coords: [1.3521, 103.8198], // Default to Singapore
+      routes: {
+        fastest: [
+          {coords: [9.9252, 78.1198], name: "Madurai"},
+          {coords: [1.3521, 103.8198], name: "Singapore"}
+        ]
+      }
+    };
+    const destinationCoords = destinationInfo.coords;
+
+    // Initialize the map with a world view
+    const startPoint = [9.9252, 78.1198];
+    const map = L.map('map').setView([
+      (startPoint[0] + destinationCoords[0]) / 2,
+      (startPoint[1] + destinationCoords[1]) / 2
+    ], 3);
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    // Create custom icons
+    const redIcon = L.divIcon({
+      className: 'red-icon',
+      iconSize: [20, 20],
+      iconAnchor: [10, 10]
+    });
+
+    const waypointIcon = L.divIcon({
+      className: 'waypoint-icon',
+      iconSize: [12, 12],
+      iconAnchor: [6, 6]
+    });
+
+    // Add markers
+    L.marker(startPoint).addTo(map).bindPopup("Starting Point: Madurai");
+    const destinationMarker = L.marker(destinationCoords, { icon: redIcon }).addTo(map);
+
+    // Show route selector if multiple routes are available
+    if (destinationInfo.routes && Object.keys(destinationInfo.routes).length > 1) {
+      document.getElementById('routeSelector').style.display = 'block';
+    }
+
+    // Car marker setup
+    const carElement = document.createElement('div');
+    carElement.className = 'car-marker';
+    carElement.innerHTML = `<img src="{% static 'images/flight.png' %}" class="car-icon" />`;
+
+    const carIcon = L.divIcon({
+      html: carElement,
+      className: '',
+      iconSize: [32, 32],
+      iconAnchor: [16, 16],
+    });
+
+    // Animation variables
+    let currentPosition = 0;
+    let currentSpeed = 0;
+    const targetSpeed = 0.5; // Increased speed
+    const acceleration = 0.005; // Faster acceleration
+    let animationId = null;
+    let smoothedRoute = [];
+    let currentRoute = null;
+    let routeControl = null;
+    let waypointMarkers = [];
+    let routePointTags = [];
+    let totalDistance = 0;
+    let lastAngle = 0;
+    const angleSmoothingFactor = 0.2;
+    let lastFrameTime = 0;
+    const targetFPS = 60; // Higher frame rate for smoother animation
+    let hasReachedDestination = false;
+
+    const carMarker = L.marker(startPoint, { icon: carIcon }).addTo(map);
+
+    // Initialize Routing Machine
+    const routingControl = L.Routing.control({
+      waypoints: [],
+      routeWhileDragging: false,
+      show: false,
+      addWaypoints: false,
+      draggableWaypoints: false,
+      fitSelectedRoutes: false,
+      lineOptions: {
+        styles: [{color: '#3498db', opacity: 0.7, weight: 7}]
+      }
+    }).addTo(map);
+
+    // Start the trip
+    fetchRoute();
+
+    // Route selector event listener
+    document.getElementById('routeOption')?.addEventListener('change', function() {
+      const selectedRoute = this.value;
+      if (destinationInfo.routes && destinationInfo.routes[selectedRoute]) {
+        currentRoute = destinationInfo.routes[selectedRoute];
+        processRoute(currentRoute);
+      }
+    });
+
+    function fetchRoute() {
+      if (destinationInfo.routes) {
+        const routeOption = document.getElementById('routeOption')?.value || 'fastest';
+        currentRoute = destinationInfo.routes[routeOption] || destinationInfo.routes.fastest;
+        processRoute(currentRoute);
+      } else {
+        // Use Routing Machine for realistic routes
+        routingControl.setWaypoints([
+          L.latLng(startPoint[0], startPoint[1]),
+          L.latLng(destinationCoords[0], destinationCoords[1])
+        ]);
+        
+        routingControl.on('routesfound', function(e) {
+          const routes = e.routes;
+          const route = routes[0].coordinates.map(coord => [coord.lat, coord.lng]);
+          processRoute([{coords: startPoint, name: "Madurai"}, {coords: destinationCoords, name: destinationName}], route);
+        });
+      }
+    }
+
+    function processRoute(routePoints, coordinates = null) {
+      // Clear existing elements
+      if (routeControl) {
+        map.removeControl(routeControl);
+      }
+      
+      waypointMarkers.forEach(marker => map.removeLayer(marker));
+      waypointMarkers = [];
+      
+      routePointTags.forEach(tag => map.removeLayer(tag));
+      routePointTags = [];
+
+      // Reset animation state
+      hasReachedDestination = false;
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+      }
+
+      // Convert route to array of coordinates if it's an array of objects
+      const routeCoords = coordinates || routePoints.map(point => point.coords || point);
+      const routeNames = routePoints.map(point => point.name || null);
+
+      // Calculate total distance using Routing Machine or fallback
+      if (coordinates) {
+        routingControl.on('routesfound', function(e) {
+          totalDistance = e.routes[0].summary.totalDistance / 1000; // Convert to km
+          updateRouteVisuals(routePoints, routeCoords);
+        });
+      } else {
+        totalDistance = 0;
+        for (let i = 0; i < routeCoords.length - 1; i++) {
+          totalDistance += calculateDistance(
+            routeCoords[i][0], routeCoords[i][1],
+            routeCoords[i+1][0], routeCoords[i+1][1]
+          );
+        }
+        updateRouteVisuals(routePoints, routeCoords);
+      }
+    }
+
+    function updateRouteVisuals(routePoints, routeCoords) {
+      // Add route point tags (only for start and destination)
+      for (let i = 0; i < routePoints.length; i++) {
+        const point = routePoints[i].coords;
+        const name = routePoints[i].name;
+        
+        // Only create tags for start and destination points
+        if (i === 0 || i === routePoints.length - 1) {
+          const isDestination = i === routePoints.length - 1;
+          const tag = L.divIcon({
+            className: `route-point-tag ${isDestination ? 'destination-tag' : ''}`,
+            html: `${name}`,
+            iconSize: [100, 30],
+            iconAnchor: [50, 30]
+          });
+          
+          const marker = L.marker(point, { icon: tag, zIndexOffset: 1000 }).addTo(map);
+          routePointTags.push(marker);
+        }
+        
+        // Add waypoint markers for intermediate points
+        if (i > 0 && i < routePoints.length - 1) {
+          const marker = L.marker(point, { icon: waypointIcon }).addTo(map);
+          waypointMarkers.push(marker);
+        }
+      }
+
+      // Update destination marker
+      destinationMarker.setPopupContent(
+        `<b>Destination:</b> ${destinationName}`
+      );
+
+      // Create curved route using Routing Machine
+      const waypoints = routePoints.map(point => 
+        L.latLng(point.coords[0], point.coords[1])
+      );
+      
+      routeControl = L.Routing.control({
+        waypoints: waypoints,
+        routeWhileDragging: false,
+        show: false,
+        addWaypoints: false,
+        draggableWaypoints: false,
+        fitSelectedRoutes: true,
+        lineOptions: {
+          styles: [{
+            color: getRouteColor(),
+            opacity: 0.7,
+            weight: 7
+          }]
+        }
+      }).addTo(map);
+
+      // Get the actual route coordinates for animation
+      routeControl.on('routesfound', function(e) {
+        const routes = e.routes;
+        smoothedRoute = routes[0].coordinates.map(coord => [coord.lat, coord.lng]);
+        
+        // Reset and start animation
+        if (animationId) {
+          cancelAnimationFrame(animationId);
+        }
+        currentPosition = 0;
+        currentSpeed = 0;
+        lastFrameTime = 0;
+        hasReachedDestination = false;
+        startTrip();
+      });
+    }
+
+    function getRouteColor() {
+      if (!destinationInfo.routes) return '#3498db';
+      
+      const routeOption = document.getElementById('routeOption')?.value || 'fastest';
+      if (routeOption === 'scenic') return '#27ae60';
+      if (routeOption === 'historic') return '#e67e22';
+      return '#3498db';
+    }
+
+    // Haversine formula for distance calculation
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = deg2rad(lat2 - lat1);
+      const dLon = deg2rad(lon2 - lon1);
+      const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+
+    function deg2rad(deg) {
+      return deg * (Math.PI/180);
+    }
+
+    function startTrip() {
+      lastFrameTime = 0;
+      animationId = requestAnimationFrame(animate);
+    }
+
+    function animate(timestamp) {
+      if (!lastFrameTime) lastFrameTime = timestamp;
+      const deltaTime = timestamp - lastFrameTime;
+      
+      if (deltaTime >= 1000 / targetFPS) {
+          lastFrameTime = timestamp;
+          
+          // Speed control
+          if (currentSpeed < targetSpeed) {
+              currentSpeed = Math.min(currentSpeed + acceleration, targetSpeed);
+          }
+          
+          currentPosition += currentSpeed / 1000;
+          
+          if (currentPosition >= 1) {
+              currentPosition = 1;
+              currentSpeed = 0;
+              updateCarPosition(currentPosition);
+              if (!hasReachedDestination) {
+                triggerConfetti();
+                hasReachedDestination = true;
+              }
+              return;
+          }
+          
+          updateCarPosition(currentPosition);
+      }
+      
+      animationId = requestAnimationFrame(animate);
+    }
+
+    function cubicInterpolate(y0, y1, y2, y3, mu) {
+      const mu2 = mu * mu;
+      const a0 = y3 - y2 - y0 + y1;
+      const a1 = y0 - y1 - a0;
+      const a2 = y2 - y0;
+      const a3 = y1;
+      return a0 * mu * mu2 + a1 * mu2 + a2 * mu + a3;
+    }
+
+    function updateCarPosition(progress) {
+      const exactIndex = progress * (smoothedRoute.length - 1);
+      const index = Math.floor(exactIndex);
+      const nextIndex = Math.min(index + 1, smoothedRoute.length - 1);
+      const partialProgress = exactIndex % 1;
+
+      // Use cubic interpolation for smoother movement
+      const prevIndex = Math.max(index - 1, 0);
+      const nextNextIndex = Math.min(index + 2, smoothedRoute.length - 1);
+      
+      const currentPoint = smoothedRoute[index];
+      const nextPoint = smoothedRoute[nextIndex];
+      const prevPoint = smoothedRoute[prevIndex];
+      const nextNextPoint = smoothedRoute[nextNextIndex];
+
+      // Cubic interpolation for latitude
+      const lat = cubicInterpolate(
+          prevPoint[0], currentPoint[0], nextPoint[0], nextNextPoint[0], 
+          partialProgress
+      );
+      
+      // Cubic interpolation for longitude
+      const lng = cubicInterpolate(
+          prevPoint[1], currentPoint[1], nextPoint[1], nextNextPoint[1], 
+          partialProgress
+      );
+
+      // Update car position
+      carMarker.setLatLng([lat, lng]);
+      
+      // Calculate angle between current and next point
+      const rawAngle = calculateAngle(currentPoint, nextPoint);
+      const smoothedAngle = lastAngle + angleSmoothingFactor * (rawAngle - lastAngle);
+      lastAngle = smoothedAngle;
+      
+      // Update car rotation
+      carElement.style.setProperty('--rotation', `${smoothedAngle}deg`);
+      
+      // Smooth panning
+      const bounds = map.getBounds();
+      if (!bounds.contains([lat, lng])) {
+          map.panTo([lat, lng], { animate: true, duration: 0.5 });
+      }
+    }
+
+    function calculateAngle(currentPos, nextPos) {
+      const dx = nextPos[1] - currentPos[1];
+      const dy = nextPos[0] - currentPos[0];
+      return Math.atan2(dx, dy) * 180 / Math.PI;
+    }
+
+    function triggerConfetti() {
+      // Get the destination position on screen
+      const destPoint = map.latLngToContainerPoint(destinationMarker.getLatLng());
+      const x = destPoint.x / map.getSize().x;
+      const y = destPoint.y / map.getSize().y;
+      
+      // Confetti configuration
+      const colors = ['#8e44ad', '#e67e22', '#27ae60', '#3498db', '#f1c40f'];
+      
+      // Create confetti effect
+      const end = Date.now() + 3000; // 3 seconds of confetti
+      
+      (function frame() {
+        // Launch from left side
+        confetti({
+          particleCount: 5,
+          angle: 60,
+          spread: 55,
+          origin: { x, y },
+          colors: colors
+        });
+        
+        // Launch from right side
+        confetti({
+          particleCount: 5,
+          angle: 120,
+          spread: 55,
+          origin: { x, y },
+          colors: colors
+        });
+        
+        // Launch from bottom
+        confetti({
+          particleCount: 5,
+          angle: -90,
+          spread: 55,
+          origin: { x, y },
+          colors: colors
+        });
+        
+        // Continue if we're not done yet
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+        
+        // Open destination popup
+        destinationMarker.openPopup();
+      }());
+    }
+  </script>
+</body>
+</html>

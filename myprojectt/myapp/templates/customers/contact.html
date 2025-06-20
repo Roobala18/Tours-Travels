@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+.contactheader{
+  background-image:  url("{% static 'images/bbgg.webp' %}");
+  background-repeat:no-repeat;
+  background-size:contain;
+  color:black;
+  height:200px;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.whatsapp-float {
+    position: fixed;
+    bottom: 20px;
+    right: 10px;
+    z-index: 9999;
+    background-color: #25D366;
+    color: white;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    animation: bounce 1.5s infinite;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: background 0.3s;
+}
+
+.whatsapp-float:hover {
+    background-color: #128C7E;
+}
+
+ @media (max-width: 768px){
+  .contactheader{
+     background-image:  url("{% static 'images/bbgg.webp' %}");
+  background-repeat:no-repeat;
+  background-size:contain;
+
+
+  }
+ }
+
+</style>
+<!-- Contact Header -->
+<section class=" contactheader">
+  
+</section>
+<div class="container">
+    <h2 class="text-center fw-bold mb-3" data-aos="fade-up">Contact Us</h2>
+    <p class="text-center fw-bold" data-aos="fade-up" data-aos-delay="100">We'd love to hear from you. Reach out anytime!</p>
+  </div>
+<!-- Contact Section -->
+<section class="py-5">
+  <div class="container">
+    <div class="row g-5">
+
+      <!-- Contact Form -->
+<div class="col-md-6" data-aos="fade-right" data-aos-duration="1000">
+  <h4 class="mb-4">Get In Touch</h4>
+  <form id="whatsappForm">
+    <div class="mb-4">
+      <input type="text" id="name" class="form-control rounded-3" placeholder="Your Name" required>
+    </div>
+    <div class="mb-4">
+      <input type="email" id="email" class="form-control rounded-3" placeholder="Your Email" required>
+    </div>
+     <div class="mb-4">
+      <input type="text" id="name" class="form-control rounded-3" placeholder="Mobile Number" required>
+    </div>
+    <div class="mb-4">
+      <input type="text" id="subject" class="form-control rounded-3" placeholder="Subject" required>
+    </div>
+    <div class="mb-4">
+      <textarea id="message" rows="5" class="form-control rounded-3" placeholder="Your Message" required></textarea>
+    </div>
+    <button type="submit" class="btn px-4 rounded-pill">Send Message</button>
+  
+
+  </form>
+</div>
+
+
+      <!-- Google Map -->
+      <div class="col-md-6" data-aos="fade-left" data-aos-duration="1000">
+        <h4 class="mb-4">Our Location</h4>
+        <div class="ratio ratio-4x3 rounded shadow-sm">
+          <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3916.488137772389!2d77.0123456!3d11.0223456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba858e0c4a4b6a5%3A0xa5b9e5f464f0e6c3!2sYour+Travel+Agency+Location!5e0!3m2!1sen!2sin!4v1234567890" 
+            width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy">
+          </iframe>
+        </div>
+      </div>
+
+    </div>
+      <a href="https://wa.me/918508229704?text=Hello%2C%20I%20am%20interested%20in%20your%20tour%20packages." 
+   class="whatsapp-float" 
+   target="_blank" 
+   title="Chat with us on WhatsApp">
+    <i class="bi bi-whatsapp"></i>
+</a>
+  </div>
+  
+</section>
+
+</section>
+
+<!-- Branches Section -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h4 class="mb-4 text-center fw-bold" data-aos="fade-up">Our Branches</h4>
+    <div class="row g-4">
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="p-4 rounded shadow-sm h-100 bg-white">
+          <h5>Madurai</h5>
+          <p class="mb-1"><i class="bi bi-geo-alt-fill me-2 text-danger"></i>123, Anna Nagar, Madurai</p>
+          <p><i class="bi bi-telephone-fill me-2 text-success"></i>+91 98765 43210</p>
+        </div>
+      </div>
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="p-4 rounded shadow-sm h-100 bg-white">
+          <h5>Chennai</h5>
+          <p class="mb-1"><i class="bi bi-geo-alt-fill me-2 text-danger"></i>45, T Nagar, Chennai</p>
+          <p><i class="bi bi-telephone-fill me-2 text-success"></i>+91 91234 56789</p>
+        </div>
+      </div>
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+        <div class="p-4 rounded shadow-sm h-100 bg-white">
+          <h5>Coimbatore</h5>
+          <p class="mb-1 "><i class="bi bi-geo-alt-fill me-2 text-danger"></i>67, Gandhipuram, Coimbatore</p>
+          <p><i class="bi bi-telephone-fill me-2 text-success"></i>+91 90123 45678</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Social Media Section -->
+<section class="py-5 text-center">
+  <div class="container">
+    <h4 class="mb-4 fw-bold" data-aos="fade-up">Connect With Us</h4>
+    <div class="d-flex justify-content-center gap-4" data-aos="fade-up" data-aos-delay="100">
+      <a href="https://facebook.com/yourpage" target="_blank" class="text-decoration-none fs-4 text-primary"><i class="bi bi-facebook"></i></a>
+      <a href="https://instagram.com/yourpage" target="_blank" class="text-decoration-none fs-4 text-danger"><i class="bi bi-instagram"></i></a>
+      <a href="https://twitter.com/yourpage" target="_blank" class="text-decoration-none fs-4 text-info"><i class="bi bi-twitter"></i></a>
+      <a href="https://wa.me/91XXXXXXXXXX" target="_blank" class="text-decoration-none fs-4 text-success"><i class="bi bi-whatsapp"></i></a>
+    </div>
+  </div>
+</section>
+
+
+<!-- AOS -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+  AOS.init();
+</script>
+
+<style>
+  .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+  }
+
+  textarea.form-control {
+    resize: none;
+  }
+  .btn{
+      background: linear-gradient(744deg, #af40ff, #a9a1dc 60%, #05e7f7);
+  
+    color:white;
+  }
+  .btn:hover{
+    background-image: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%);
+    color:white;
+  }
+</style>
+<script>
+  document.getElementById("whatsappForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const subject = document.getElementById("subject").value;
+    const message = document.getElementById("message").value;
+
+    const phoneNumber = "91XXXXXXXXXX"; 
+
+    const text = `Hello, I'm ${name} (%0AEmail: ${email})%0A%0ASubject: ${subject}%0A%0A${message}`;
+    const url = `https://wa.me/${phoneNumber}?text=${text}`;
+
+    // Show success popup, then redirect
+    Swal.fire({
+      icon: 'success',
+      title: 'Thank you!',
+      text: 'Redirecting to WhatsApp...',
+      timer: 2000,
+      showConfirmButton: false
+    }).then(() => {
+      window.open(url, "_blank");
+    });
+  });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+{% endblock %}

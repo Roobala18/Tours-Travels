@@ -1,0 +1,170 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Travel Quote</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <style>
+        @page {
+            size: A4;
+            margin: 1.5cm;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #333;
+            background: white;
+        }
+
+        h1, h2 {
+            color: #2c3e50;
+        }
+
+        .watermark {
+            position: fixed;
+            top: 40%;
+            left: 5%;
+            width: 80%;
+            text-align: center;
+            font-size: 150px;
+            color: #000;
+            opacity: 0.07;
+            transform: rotate(-50deg);
+            z-index: -1;
+            pointer-events: none;
+            line-height: 1;
+        }
+
+        .quote-box {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .quote-box h2 {
+            color: white;
+            background-color: #22c55e;
+            padding: 10px 20px;
+            display: inline-block;
+            border-radius: 5px;
+        }
+
+        .content {
+            margin: 30px auto;
+            max-width: 600px;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #555;
+            font-size: 15px;
+        }
+
+        .info-box {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .info-row span {
+            font-weight: bold;
+        }
+
+        .total-price {
+            font-size: 22px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        .footer {
+            margin-top: 80px;
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+        }
+
+    .day-label {
+    font-size: 18px;
+    font-weight: bold;
+    color: #111827;
+    margin-top: 20px;
+}
+
+.itinerary-box {
+    padding: 20px;
+    border-left: 4px solid #10b981;
+    {% comment %} background: #f9fafb; {% endcomment %}
+    border-radius: 6px;
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="watermark">Kumaran Travels</div>
+
+    <!-- First Page - Quote -->
+    <img src="{% static 'images/background11.jpg' %}" 
+     alt="Banner" 
+     style="display: block; margin: 0 auto; width: 100%; height: 400px; object-fit: cover; border-radius: 8px;">
+
+    <div class="quote-box">
+        <h2>TRAVEL PACKAGE QUOTATION</h2>
+    </div>
+
+    <div class="content">
+        <p><strong>Dear {{ package.customer }},</strong></p>
+        <p>Greetings from <strong>Kumaran Travels</strong>.</p>
+        <p>Our sales team has put up this quote regarding your upcoming trip. Please go through it and let us know if you would like any changes in any of the provided services. Contact details are provided at the end.</p>
+
+        <div class="info-box">
+            <div class="info-row"><span>Destination:</span> {{ package.destination }}</div>
+            <div class="info-row"><span>Start Date:</span> {{ package.start_date }}</div>
+            <div class="info-row"><span>Duration:</span> {{ package.duration }}</div>
+            <div class="info-row"><span>PAX:</span> {{ package.pax }}</div>
+            <div class="info-row"><span>Trip ID:</span> {{ package.trip_id }}</div>
+            <div class="info-row total-price">Total (INR): ₹{{ package.amount }} /-</div>
+            <div class="info-row"><small>(Excluding GST)</small></div>
+        </div>
+    </div>
+
+    <!-- Page Break -->
+    <!-- Second Page - Itinerary -->
+<div class="page-break"></div>
+<div class="content">
+    <h2 style="color:#1e3a8a;">🗓️ Detailed Itinerary</h2>
+    <div class="itinerary-box">
+        {% if package.itinerary %}
+            {% for day, plan in package.itinerary.items %}
+                <p class="day-label">{{ day|title }}</p>
+                <p>{{ plan }}</p>
+                <hr style="border-top: 1px dashed #ccc;">
+            {% endfor %}
+        {% else %}
+            <p>No itinerary details available.</p>
+        {% endif %}
+    </div>
+</div>
+
+
+    <div class="footer">
+        <p><i class="fa-solid fa-phone"></i> 9890767870 | 
+           <i class="fa-solid fa-envelope"></i> kumarantravels@gmail.com | 
+           <i class="fa-solid fa-location-dot"></i> 123, Anna Nagar, Madurai</p>
+        <p>Powered by CarTours</p>
+    </div>
+
+</body>
+</html>

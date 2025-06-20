@@ -1,0 +1,1684 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Tamil Nadu Destinations</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: rgb(64, 67, 222);
+ ;
+            --secondary: rgb(17, 18, 81);
+ ;
+            --accent: #27ae60;
+            --light: #f5f6fa;
+            --dark: #2c3e50;
+            --text: #34495e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            {% comment %} background-color: var(--light); {% endcomment %}
+            
+            background-size:contain;
+            color: var(--text);
+            overflow-x: hidden;
+        }
+        .hero-carousel {
+            position: relative;
+            height: 80vh;
+            overflow: hidden;
+            width: 100%;
+        }
+        
+        .carousel-container {
+            position: relative;
+            height: 100%;
+            width: 100%;
+        }
+        
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .carousel-slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(46, 64, 87, 0.8), rgba(71, 46, 87, 0.8));
+        }
+        
+        .carousel-slide::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to top, var(--light), transparent);
+            z-index: 1;
+        }
+        
+        .carousel-slide.active {
+            opacity: 1;
+            z-index: 2;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            max-width: 800px;
+            padding: 0 20px;
+            color: white;
+        }
+        
+        .hero-content h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            animation: fadeInDown 1s ease;
+        }
+        
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease 0.3s forwards;
+            opacity: 0;
+        }
+        
+        .btn-explore {
+            display: inline-block;
+            padding: 12px 30px;
+             background: linear-gradient(744deg, #af40ff, #a9a1dc 60%, #05e7f7);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            animation: fadeIn 1s ease 0.6s forwards;
+            opacity: 0;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+        
+        .btn-explore:hover {
+            background-image: linear-gradient(120deg,rgb(175, 224, 61) 0%,rgb(117, 240, 134) 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.6);
+        }
+        
+        .carousel-nav {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+        
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-dot.active {
+              background-color: #05e7f7;
+            transform: scale(1.2);
+        }
+        
+        .carousel-control {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        
+        .carousel-control:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .carousel-control.prev {
+            left: 30px;
+        }
+        
+        .carousel-control.next {
+            right: 30px;
+        }  
+
+        /* Section Styles */
+         #destinations {
+            position: relative;
+            padding: 100px 0;
+            overflow: hidden;
+            {% comment %} background: linear-gradient(135deg, rgba(245, 246, 250, 0.8), rgba(229, 231, 235, 0.8)); {% endcomment %}
+        }
+        #destinations::before {
+         content: '';
+         position: absolute;
+         top: 0; left: 0; right: 0; bottom: 0;
+         background-image: url("{% static 'images/bgtravel.jpg' %}");
+         background-size: contain;
+        filter: blur(5px); 
+        z-index: 1;
+}
+        .swirl-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        #swirl-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .section {
+            padding: 80px 0;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .section-title {
+            position: relative;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-title h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--dark);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--secondary);
+            border-radius: 2px;
+        }
+        
+       
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .tn-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            transform: translateY(0);
+            opacity: 0;
+            animation: cardEntrance 0.8s ease forwards;
+            border: 0.5px solid black;
+        }
+        
+        .tn-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            border-color: lavender;
+        }
+        
+        @keyframes cardEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+       
+        .tn-card:nth-child(1) { animation-delay: 0.1s; }
+        .tn-card:nth-child(2) { animation-delay: 0.2s; }
+        .tn-card:nth-child(3) { animation-delay: 0.3s; }
+        .tn-card:nth-child(4) { animation-delay: 0.4s; }
+        .tn-card:nth-child(5) { animation-delay: 0.5s; }
+        .tn-card:nth-child(6) { animation-delay: 0.6s; }
+        .tn-card:nth-child(7) { animation-delay: 0.7s; }
+        .tn-card:nth-child(8) { animation-delay: 0.8s; }
+        .tn-card:nth-child(9) { animation-delay: 0.9s; }
+        
+        .card-image {
+            height: 220px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1.2s ease, filter 0.5s ease;
+        }
+        
+        .tn-card:hover .card-image img {
+            transform: scale(1.1);
+            filter: brightness(1.05);
+        }
+        
+        .card-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.9);
+            color: var(--dark);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+        
+        .tn-card:hover .card-badge {
+            background: var(--secondary);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .card-content {
+            padding: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+            {% comment %} background-image: url("{% static 'images/rbg1.jpg' %}"); 
+            background-size: 100% 100%;
+            background-repeat: no-repeat; {% endcomment %}
+        }
+        
+        .tn-card:hover .card-content {
+            transform: translateY(-5px);
+        }
+        
+        .card-content h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+            transition: all 0.3s ease;
+        }
+        
+        .tn-card:hover .card-content h3 {
+            color: var(--secondary);
+        }
+        
+        .card-content p {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+        
+        .tn-card:hover .card-content p {
+            color: #555;
+        }
+        
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            transition: all 0.3s ease;
+        }
+        
+        .tn-card:hover .card-footer {
+            border-top-color: rgba(142, 68, 173, 0.2);
+        }
+        
+        .btn-card {
+            padding: 8px 20px;
+            background: linear-gradient(744deg, #af40ff, #a9a1dc 60%, #05e7f7);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .tn-card:hover .btn-card {
+             background-image: linear-gradient(120deg,rgb(175, 224, 61) 0%,rgb(117, 240, 134) 100%);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+       
+        .view-more-container {
+            text-align: center;
+            margin-top: 50px;
+        }
+        
+        .btn-view-more {
+            display: inline-block;
+            padding: 12px 30px;
+            background: white;
+            color: var(--primary);
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid var(--primary);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .btn-view-more:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(142, 68, 173, 0.3);
+        }
+        
+      
+        .feature-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            border: 1px solid black;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            border-color: transparent;
+        }
+        
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 1.8rem;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover .feature-icon {
+            transform: rotate(15deg) scale(1.1);
+        }
+        
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover h3 {
+            color: var(--primary);
+        }
+        
+        .feature-card p {
+            color: #666;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover p {
+            color: #555;
+        }
+        
+        
+        {% comment %} footer {
+            background: var(--dark);
+            color: white;
+            padding: 60px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: var(--secondary);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column ul li a {
+            color: #bbb;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-column ul li a:hover {
+            color: var(--secondary);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background: var(--secondary);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #bbb;
+            font-size: 0.9rem;
+        }
+         {% endcomment %}
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            .carousel-control {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+            
+            .carousel-control.prev {
+                left: 10px;
+            }
+            
+            .carousel-control.next {
+                right: 10px;
+            }
+        }
+        .filter-section {
+    background-color: white;
+    padding: 30px 0;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.filter-controls {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.search-box {
+    position: relative;
+    flex: 1;
+    max-width: 400px;
+}
+
+.search-box i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary);
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px 20px 12px 45px;
+    border: 1px solid #ddd;
+    border-radius: 50px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #f9f9f9;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(64, 67, 222, 0.2);
+    background-color: white;
+}
+
+.filter-dropdown select, 
+.sort-options select {
+    padding: 12px 20px;
+    border: 1px solid #ddd;
+    border-radius: 50px;
+    font-size: 1rem;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    appearance: none;
+    padding-right: 40px;
+    {% comment %} background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); {% endcomment %}
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 1em;
+    transition: all 0.3s ease;
+}
+
+.filter-dropdown select:focus, 
+.sort-options select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(64, 67, 222, 0.2);
+    background-color: white;
+}
+
+.no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 50px;
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.no-results i {
+    font-size: 2rem;
+    margin-bottom: 15px;
+    color: var(--primary);
+}
+
+@media (max-width: 768px) {
+    .filter-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-box,
+    .filter-dropdown select,
+    .sort-options select {
+        max-width: 100%;
+    }
+}
+    </style>
+</head>
+<body>
+        <section class="hero-carousel">
+        <div class="carousel-container">
+            <!-- Slide 1 - Temples -->
+            <div class="carousel-slide active" style="background-image: url('https://images.unsplash.com/photo-1587474260584-136574528ed5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80')">
+                <div class="hero-content">
+                    <h1>All Tamilnadu  Destinations</h1>
+                    <p>Discover 30+ amazing places across Tamil Nadu</p>
+                    <a href="#cards-container" class="btn-explore">Explore Temples</a>
+                </div>
+            </div>
+            
+            <!-- Slide 2 - Nature -->
+            <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1593693397690-362cb9666fc2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80')">
+                <div class="hero-content">
+                    <h1>Nature's Paradise</h1>
+                    <p>Explore the breathtaking landscapes, serene hill stations, and pristine beaches of Tamil Nadu</p>
+                    <a href="#destinations" class="btn-explore">Discover Nature</a>
+                </div>
+            </div>
+            
+            <!-- Slide 3 - Culture -->
+            <div class="carousel-slide"  style="background: url('{% static 'images/background11.jpg' %}') no-repeat center center; background-size: cover;">
+                <div class="hero-content">
+                    <h1>Rich Cultural Heritage</h1>
+                    <p>Immerse yourself in vibrant festivals, traditional arts, and delicious cuisine of Tamil culture</p>
+                    <a href="#destinations" class="btn-explore">Experience Culture</a>
+                </div>
+            </div>
+            
+            <!-- Slide 4 - Wildlife -->
+            <div class="carousel-slide" style="background: url('{% static 'images/bg11.webp' %}') no-repeat center center; background-size: cover;">
+                <div class="hero-content">
+                    <h1>Wildlife Adventures</h1>
+                    <p>Encounter exotic wildlife in Tamil Nadu's national parks and nature reserves</p>
+                    <a href="#destinations" class="btn-explore">Wildlife Tours</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation Controls -->
+        <div class="carousel-control prev">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+        <div class="carousel-control next">
+            <i class="fas fa-chevron-right"></i>
+        </div>
+        
+        <!-- Navigation Dots -->
+        <div class="carousel-nav">
+            <div class="nav-dot active"></div>
+            <div class="nav-dot"></div>
+            <div class="nav-dot"></div>
+            <div class="nav-dot"></div>
+        </div>
+    </section>
+    <section class="filter-section">
+    <div class="container">
+        <div class="filter-controls">
+            <!-- Search Box -->
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-input" placeholder="Search destinations...">
+            </div>
+            
+            <!-- Filter Dropdown -->
+            <div class="filter-dropdown">
+                <select id="category-filter">
+                    <option value="all">All Categories</option>
+                    <option value="Cultural">Cultural</option>
+                    <option value="Hill Station">Hill Station</option>
+                    <option value="UNESCO Site">UNESCO Site</option>
+                    <option value="Sunrise Point">Sunrise Point</option>
+                    <option value="Heritage">Heritage</option>
+                    <option value="Pilgrimage">Pilgrimage</option>
+                    <option value="Waterfalls">Waterfalls</option>
+                    <option value="Beach">Beach</option>
+                    <option value="Wildlife">Wildlife</option>
+                    <option value="Temple">Temple</option>
+                </select>
+            </div>
+            
+            <!-- Sort Options -->
+            <div class="sort-options">
+                <select id="sort-options">
+                    <option value="default">Sort By</option>
+                    <option value="name-asc">Name (A-Z)</option>
+                    <option value="name-desc">Name (Z-A)</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <div class="container1 mt-4">
+    <div class="d-flex justify-content-end">
+  <a href="{% url 'home' %}" class="btn custom-back-btn d-inline-flex align-items-center">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left-circle me-2" viewBox="0 0 16 16">
+      <path fill-rule="evenodd" d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0-1A6 6 0 1 0 8 2a6 6 0 0 0 0 12z"/>
+      <path fill-rule="evenodd" d="M8.354 11.354a.5.5 0 0 1-.708 0L5.5 9.207l-.354.353a.5.5 0 0 1-.708-.707l1.5-1.5a.5.5 0 0 1 .708 0l1.5 1.5a.5.5 0 0 1 0 .707z"/>
+      <path fill-rule="evenodd" d="M11.5 8a.5.5 0 0 1-.5.5H5a.5.5 0 0 1 0-1h6a.5.5 0 0 1 .5.5z"/>
+    </svg>
+    Back
+  </a>
+    </div>
+</div>
+
+
+    <section class="section" id="destinations">
+                        {% comment %} <div class="swirl-container">
+            <canvas id="swirl-canvas"></canvas>
+        </div> {% endcomment %}
+        <div class="container">
+            <div class="cards-grid" id="cards-container">
+                
+                <div class="tn-card">
+                    <div class="card-image">
+                        <img src="{% static 'images/madurai.jpg' %}" alt="Madurai">
+                        <div class="card-badge">Cultural</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Madurai</h3>
+                        <p>Explore the magnificent Meenakshi Amman Temple with its towering gopurams.</p>
+                        <a href="{% url 'destination_detail' 'madurai' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card">
+                    <div class="card-image">
+                        <img src="{% static 'images/ooty.jpg' %}" alt="Ooty">
+                        <div class="card-badge">Hill Station</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Ooty</h3>
+                        <p>Enjoy the cool climate with tea gardens and Nilgiri Mountain Railway.</p>
+                        <a href="{% url 'destination_detail' 'ooty' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card">
+                    <div class="card-image">
+                        <img src="{% static 'images/mahabalipuram.jpg' %}" alt="Mahabalipuram">
+                        <div class="card-badge">UNESCO Site</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Mahabalipuram</h3>
+                        <p>Marvel at ancient rock-cut temples by the Bay of Bengal.</p>
+                        <a href="{% url 'destination_detail' 'mahabalipuram' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card">
+                    <div class="card-image">
+                        <img src="{% static 'images/kanyakumari.jpg' %}" alt="Kanyakumari">
+                        <div class="card-badge">Sunrise Point</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Kanyakumari</h3>
+                        <p>Witness spectacular sunrise at India's southern tip.</p>
+                        <a href="{% url 'destination_detail' 'kanyakumari' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card">
+                    <div class="card-image">
+                        <img src="{% static 'images/chettinad.jpg' %}" alt="Chettinad">
+                        <div class="card-badge">Heritage</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Chettinad</h3>
+                        <p>Explore grand mansions and spicy Chettiar cuisine.</p>
+                        <a href="{% url 'destination_detail' 'chettinad' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card">
+                    <div class="card-image">
+                        <img src="{% static 'images/kodainal.jpg' %}" alt="Kodaikanal">
+                        <div class="card-badge">Hill Station</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Kodaikanal</h3>
+                        <p>Discover misty hills and beautiful lakes.</p>
+                        <a href="{% url 'destination_detail' 'kodaikanal' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card">
+                    <div class="card-image">
+                        <img src="{% static 'images/thanjavur.jpg' %}" alt="Thanjavur">
+                        <div class="card-badge">UNESCO Site</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Thanjavur</h3>
+                        <p>Visit the magnificent Brihadeeswarar Temple.</p>
+                        <a href="{% url 'destination_detail' 'thanjavur' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card">
+                    <div class="card-image">
+                        <img src="{% static 'images/rameshwaram.jpg' %}" alt="Rameswaram">
+                        <div class="card-badge">Pilgrimage</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Rameswaram</h3>
+                        <p>Experience the spiritual Ramanathaswamy Temple.</p>
+                        <a href="{% url 'destination_detail' 'rameshwaram' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card">
+                    <div class="card-image">
+                        <img src="{% static 'images/yercaud.jpg' %}" alt="Yercaud">
+                        <div class="card-badge">Hill Station</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Yercaud</h3>
+                        <p>Explore orange groves and coffee plantations.</p>
+                        <a href="{% url 'destination_detail' 'yercaud' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card">
+                    <div class="card-image">
+                        <img src="{% static 'images/coonoor.jpg' %}" alt="Coonoor">
+                        <div class="card-badge">Hill Station</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Coonoor</h3>
+                        <p>Visit tea estates and enjoy scenic toy train rides.</p>
+                        <a href="{% url 'destination_detail' 'coonoor' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card">
+                    <div class="card-image">
+                        <img src="{% static 'images/kumbakonam.jpg' %}" alt="Kumbakonam">
+                        <div class="card-badge">Temple Town</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Kumbakonam</h3>
+                        <p>Explore numerous ancient temples in this sacred town.</p>
+                        <a href="{% url 'destination_detail' 'kumbakonam' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card">
+                    <div class="card-image">
+                        <img src="{% static 'images/velankanni.jpg' %}" alt="Velankanni">
+                        <div class="card-badge">Pilgrimage</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Velankanni</h3>
+                        <p>Visit the famous Basilica of Our Lady of Good Health.</p>
+                        <a href="{% url 'destination_detail' 'velankanni' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+               
+                <div class="tn-card hidden-cards">
+                    <div class="card-image">
+                        <img src="{% static 'images/hogenakkal.jpg' %}" alt="Hogenakkal">
+                        <div class="card-badge">Waterfalls</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Hogenakkal</h3>
+                        <p>Experience the breathtaking waterfalls and coracle rides.</p>
+                        <a href="{% url 'destination_detail' 'hogenakkal' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card hidden-cards">
+                    <div class="card-image">
+                        <img src="{% static 'images/courtallam.jpg' %}" alt="Courtallam">
+                        <div class="card-badge">Waterfalls</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Courtallam</h3>
+                        <p>Enjoy therapeutic waterfalls with medicinal properties.</p>
+                        <a href="{% url 'destination_detail' 'courtallam' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card hidden-cards">
+                    <div class="card-image">
+                        <img src="{% static 'images/kovalam.jpg' %}" alt="Kovalam">
+                        <div class="card-badge">Beach</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Kovalam</h3>
+                        <p>Relax on beautiful beaches near Chennai.</p>
+                        <a href="{% url 'destination_detail' 'kovalam' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card hidden-cards">
+                    <div class="card-image">
+                        <img src="{% static 'images/pollachi.jpg' %}" alt="Pollachi">
+                        <div class="card-badge">Countryside</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Pollachi</h3>
+                        <p>Explore rustic countryside and coconut groves.</p>
+                        <a href="{% url 'destination_detail' 'pollachi' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card hidden-cards">
+                    <div class="card-image">
+                        <img src="{% static 'images/tranquebar.jpg' %}" alt="Tranquebar">
+                        <div class="card-badge">Heritage</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Tranquebar</h3>
+                        <p>Explore Danish colonial heritage in this quiet town.</p>
+                        <a href="{% url 'destination_detail' 'tranquebar' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card hidden-cards">
+                    <div class="card-image">
+                        <img src="{% static 'images/valparai.jpg' %}" alt="Valparai">
+                        <div class="card-badge">Hill Station</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Valparai</h3>
+                        <p>Discover this lesser-known hill station with tea estates.</p>
+                        <a href="{% url 'destination_detail' 'valparai' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card hidden-cards">
+                    <div class="card-image">
+                        <img src="{% static 'images/dhanushkodi.jpg' %}" alt="Dhanushkodi">
+                        <div class="card-badge">Ghost Town</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Dhanushkodi</h3>
+                        <p>Explore this abandoned town at India's eastern tip.</p>
+                        <a href="{% url 'destination_detail' 'dhanushkodi' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card hidden-cards">
+                    <div class="card-image">
+                        <img src="{% static 'images/kolli-hills.jpg' %}" alt="Kolli Hills">
+                        <div class="card-badge">Hill Station</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Kolli Hills</h3>
+                        <p>Experience the scenic beauty and hairpin bends.</p>
+                        <a href="{% url 'destination_detail' 'kolli-hills' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card hidden-cards">
+                    <div class="card-image">
+                        <img src="{% static 'images/vellore.jpg' %}" alt="Vellore">
+                        <div class="card-badge">Fort</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Vellore</h3>
+                        <p>Visit the impressive Vellore Fort and Golden Temple.</p>
+                        <a href="{% url 'destination_detail' 'vellore' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card hidden-cards">
+                    <div class="card-image">
+                        <img src="{% static 'images/srirangam.jpg' %}" alt="Srirangam">
+                        <div class="card-badge">Temple</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Srirangam</h3>
+                        <p>Explore the massive Sri Ranganathaswamy Temple complex.</p>
+                        <a href="{% url 'destination_detail' 'srirangam' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card hidden-cards">
+                    <div class="card-image">
+                        <img src="{% static 'images/chidambaram.jpg' %}" alt="Chidambaram">
+                        <div class="card-badge">Temple</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Chidambaram</h3>
+                        <p>Visit the famous Nataraja Temple dedicated to Lord Shiva.</p>
+                        <a href="{% url 'destination_detail' 'chidambaram' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card hidden-cards">
+                    <div class="card-image">
+                        <img src="{% static 'images/gangaikondacholapuram.jpg' %}" alt="Gangaikondacholapuram">
+                        <div class="card-badge">UNESCO Site</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Gangaikondacholapuram</h3>
+                        <p>Explore this ancient Chola capital and its magnificent temple.</p>
+                        <a href="{% url 'destination_detail' 'gangaikondacholapuram' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card hidden-cards">
+                    <div class="card-image">
+                        <img src="{% static 'images/darasuram.jpg' %}" alt="Darasuram">
+                        <div class="card-badge">UNESCO Site</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Darasuram</h3>
+                        <p>Visit the Airavatesvara Temple, a Chola architectural marvel.</p>
+                        <a href="{% url 'destination_detail' 'darasuram' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card hidden-cards">
+                    <div class="card-image">
+                        <img src="{% static 'images/tiruvannamalai.jpg' %}" alt="Tiruvannamalai">
+                        <div class="card-badge">Pilgrimage</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Tiruvannamalai</h3>
+                        <p>Experience the spiritual energy of Arunachaleswarar Temple.</p>
+                        <a href="{% url 'destination_detail' 'tiruvannamalai' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card hidden-cards">
+                    <div class="card-image">
+                        <img src="{% static 'images/kanchipuram.jpg' %}" alt="Kanchipuram">
+                        <div class="card-badge">Temple City</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Kanchipuram</h3>
+                        <p>Explore ancient temples and famous silk sarees.</p>
+                        <a href="{% url 'destination_detail' 'kanchipuram' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card hidden-cards">
+                    <div class="card-image">
+                        <img src="{% static 'images/mudumalai.jpg' %}" alt="Mudumalai">
+                        <div class="card-badge">Wildlife</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Mudumalai</h3>
+                        <p>Spot elephants and tigers in this wildlife sanctuary.</p>
+                        <a href="{% url 'destination_detail' 'mudumalai' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card hidden-cards">
+                    <div class="card-image">
+                        <img src="{% static 'images/vedanthangal.jpg' %}" alt="Vedanthangal">
+                        <div class="card-badge">Bird Sanctuary</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Vedanthangal</h3>
+                        <p>Watch migratory birds in one of India's oldest bird sanctuaries.</p>
+                        <a href="{% url 'destination_detail' 'vedanthangal' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card hidden-cards">
+                    <div class="card-image">
+                        <img src="{% static 'images/pichavaram.jpg' %}" alt="Pichavaram">
+                        <div class="card-badge">Mangrove</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Pichavaram</h3>
+                        <p>Explore the beautiful mangrove forest by boat.</p>
+                        <a href="{% url 'destination_detail' 'pichavaram' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card hidden-cards">
+                    <div class="card-image">
+                        <img src="{% static 'images/yelagiri.jpg' %}" alt="Yelagiri">
+                        <div class="card-badge">Hill Station</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Yelagiri</h3>
+                        <p>Enjoy this peaceful hill station with orchards and gardens.</p>
+                        <a href="{% url 'destination_detail' 'yelagiri' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card hidden-cards">
+                    <div class="card-image">
+                        <img src="{% static 'images/tuticorin.jpg' %}" alt="Thoothukudi">
+                        <div class="card-badge">Port City</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Thoothukudi</h3>
+                        <p>Explore the pearl city and its famous port.</p>
+                        <a href="{% url 'destination_detail' 'thoothukudi' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card hidden-cards">
+                    <div class="card-image">
+                        <img src="{% static 'images/karaikudi.jpg' %}" alt="Karaikudi">
+                        <div class="card-badge">Heritage</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Karaikudi</h3>
+                        <p>Explore Chettinad mansions and heritage buildings.</p>
+                        <a href="{% url 'destination_detail' 'karaikudi' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card hidden-cards">
+                    <div class="card-image">
+                        <img src="{% static 'images/kovilpatti.jpg' %}" alt="Kovilpatti">
+                        <div class="card-badge">Town</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Kovilpatti</h3>
+                        <p>Known for its delicious kadalai mittai and fireworks.</p>
+                        <a href="{% url 'destination_detail' 'kovilpatti' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card hidden-cards">
+                    <div class="card-image">
+                        <img src="{% static 'images/salem.jpg' %}" alt="Salem">
+                        <div class="card-badge">City</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Salem</h3>
+                        <p>Explore steel city and nearby tourist attractions.</p>
+                        <a href="{% url 'destination_detail' 'salem' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+                
+                <div class="tn-card hidden-cards">
+                    <div class="card-image">
+                        <img src="{% static 'images/erode.jpg' %}" alt="Erode">
+                        <div class="card-badge">City</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Erode</h3>
+                        <p>Visit turmeric markets and textile hubs.</p>
+                        <a href="{% url 'destination_detail' 'erode' %}" class="btn-card">View Tour</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- <div class="view-more-container">
+                <button id="load-more-btn" class="btn-view-more">Load More Destinations</button>
+            </div> -->
+        </div>
+    </section>
+
+    {% comment %} <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Explore</h3>
+                    <ul>
+                        <li><a href="#">Destinations</a></li>
+                        <li><a href="#">Tour Packages</a></li>
+                        <li><a href="#">Cultural Experiences</a></li>
+                        <li><a href="#">Adventure Tours</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="#">Booking Help</a></li>
+                        <li><a href="#">Cancellation Policy</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Connect With Us</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div> {% endcomment %}
+            
+            <!-- <div class="copyright">
+                <p>&copy; 2023 Discover Tamil Nadu. All rights reserved.</p>
+            </div>
+        </div>
+    </footer> -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            const hiddenCards = document.querySelectorAll('.hidden-cards');
+            let cardsShown = 0;
+            const cardsPerLoad = 6;
+            
+           
+            const cards = document.querySelectorAll('.tn-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.display = 'block';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 50);
+                }, index * 100);
+            });
+            
+           
+            loadMoreBtn.addEventListener('click', function() {
+                const cardsToShow = Math.min(cardsPerLoad, hiddenCards.length - cardsShown);
+                
+                for (let i = cardsShown; i < cardsShown + cardsToShow; i++) {
+                    if (hiddenCards[i]) {
+                        hiddenCards[i].classList.remove('hidden-cards');
+                        hiddenCards[i].style.opacity = '0';
+                        hiddenCards[i].style.transform = 'translateY(20px)';
+                        hiddenCards[i].style.transition = 'all 0.5s ease';
+                        
+                        setTimeout(() => {
+                            hiddenCards[i].style.opacity = '1';
+                            hiddenCards[i].style.transform = 'translateY(0)';
+                        }, 50);
+                    }
+                }
+                
+                cardsShown += cardsToShow;
+                
+                if (cardsShown >= hiddenCards.length) {
+                    loadMoreBtn.style.display = 'none';
+                }
+            });
+        });
+    </script>
+        <script>
+    // Carousel Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const slides = document.querySelectorAll('.carousel-slide');
+        const dots = document.querySelectorAll('.nav-dot');
+        const prevBtn = document.querySelector('.carousel-control.prev');
+        const nextBtn = document.querySelector('.carousel-control.next');
+        let currentIndex = 0;
+        let autoSlideInterval;
+
+        // Function to show a specific slide
+        function showSlide(index) {
+            // Reset all slides and dots
+            slides.forEach(slide => slide.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+            
+            // Handle index boundaries
+            if (index >= slides.length) currentIndex = 0;
+            else if (index < 0) currentIndex = slides.length - 1;
+            else currentIndex = index;
+            
+            // Activate current slide and dot
+            slides[currentIndex].classList.add('active');
+            dots[currentIndex].classList.add('active');
+        }
+
+        // Next slide function
+        function nextSlide() {
+            showSlide(currentIndex + 1);
+        }
+
+        // Previous slide function
+        function prevSlide() {
+            showSlide(currentIndex - 1);
+        }
+
+        // Auto slide rotation
+        function startAutoSlide() {
+            autoSlideInterval = setInterval(nextSlide, 5000);
+        }
+
+        // Stop auto rotation
+        function stopAutoSlide() {
+            clearInterval(autoSlideInterval);
+        }
+
+        // Event Listeners
+        nextBtn.addEventListener('click', () => {
+            nextSlide();
+            stopAutoSlide();
+            startAutoSlide();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            prevSlide();
+            stopAutoSlide();
+            startAutoSlide();
+        });
+
+        // Dot navigation
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                showSlide(index);
+                stopAutoSlide();
+                startAutoSlide();
+            });
+        });
+
+        // Pause auto-slide when hovering over carousel
+        const carousel = document.querySelector('.hero-carousel');
+        carousel.addEventListener('mouseenter', stopAutoSlide);
+        carousel.addEventListener('mouseleave', startAutoSlide);
+
+        // Initialize
+        startAutoSlide();
+    });
+</script>
+    {% comment %} <script>
+        // Ambient Swirl Effect Implementation
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('swirl-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas to full size of container
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                canvas.width = canvas.parentElement.clientWidth;
+                canvas.height = canvas.parentElement.clientHeight;
+            });
+            
+            // Particle class
+            class Particle {
+                constructor() {
+                    this.reset();
+                    this.size = Math.random() * 7.5 + 0.5;
+                }
+                
+                reset() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.vx = (Math.random() - 0.5) * 0.5;
+                    this.vy = (Math.random() - 0.5) * 0.5;
+                    this.life = Math.random() * 100 + 50;
+                    this.maxLife = this.life;
+                    const shade = Math.floor(Math.random() * 100) + 100;
+                    this.color = `rgb(${shade}, ${shade}, ${shade})`;
+                }
+                
+                update() {
+                    // Create a swirling motion
+                    const centerX = canvas.width / 2;
+                    const centerY = canvas.height / 2;
+                    const dx = this.x - centerX;
+                    const dy = this.y - centerY;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    // Force that causes particles to swirl around the center
+                    const force = -0.0005; // Negative for clockwise rotation
+                    
+                    // Apply force perpendicular to the direction towards center
+                    this.vx += force * dy / distance;
+                    this.vy += -force * dx / distance;
+                    
+                    // Add some randomness
+                    const randomness = 0.01 * (1 - this.size/10);
+                    this.vx += (Math.random() - 0.5) * randomness;
+                    this.vy += (Math.random() - 0.5) * randomness;
+                    
+                    // Apply velocity
+                    const speedFactor = 1 - (this.size / 15);
+
+                    this.x += this.vx * speedFactor;
+                    this.y += this.vy * speedFactor;
+                    
+                    // Reduce life
+                    this.life--;
+                    
+                    // Reset if particle is dead or out of bounds
+                    if (this.life <= 0 || 
+                        this.x < -50 || this.x > canvas.width + 50 || 
+                        this.y < -50 || this.y > canvas.height + 50) {
+                        this.reset();
+                    }
+                }
+                
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    const alpha = 0.2 + (this.size / 15) * 0.8;
+                    ctx.fillStyle = this.color.replace('rgb', 'rgba').replace(')', `, ${alpha})`);
+                    
+                    ctx.fill();
+                }
+            }
+            
+            // Create particles
+            const particles = [];
+            const particleCount = 200;
+            
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+            
+            // Animation loop
+            function animate() {
+                // Clear with a subtle light background
+                ctx.fillStyle = 'rgba(245, 246, 250, 0.15)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Update and draw particles
+                particles.forEach(particle => {
+                    particle.update();
+                    particle.draw();
+                });
+                
+                requestAnimationFrame(animate);
+            }
+            
+            // Start animation
+            animate();
+            
+            // Card entrance animation
+            const cards = document.querySelectorAll('.tn-card');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            cards.forEach(card => {
+                card.style.animationPlayState = 'paused';
+                observer.observe(card);
+            });
+        });
+    </script> {% endcomment %}
+    <script>
+        // Search and Filter Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search-input');
+    const categoryFilter = document.getElementById('category-filter');
+    const sortOptions = document.getElementById('sort-options');
+    const cardsContainer = document.getElementById('cards-container');
+    const cards = Array.from(document.querySelectorAll('.tn-card'));
+    
+    // Add no results message element
+    const noResults = document.createElement('div');
+    noResults.className = 'no-results';
+    noResults.innerHTML = '<i class="fas fa-map-marked-alt"></i><p>No destinations found matching your criteria</p>';
+    noResults.style.display = 'none';
+    cardsContainer.appendChild(noResults);
+    
+    // Filter function
+    function filterCards() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const category = categoryFilter.value;
+        
+        let visibleCards = 0;
+        
+        cards.forEach(card => {
+            const title = card.querySelector('h3').textContent.toLowerCase();
+            const description = card.querySelector('p').textContent.toLowerCase();
+            const badge = card.querySelector('.card-badge').textContent;
+            
+            const matchesSearch = title.includes(searchTerm) || description.includes(searchTerm);
+            const matchesCategory = category === 'all' || badge === category;
+            
+            if (matchesSearch && matchesCategory) {
+                card.style.display = 'block';
+                visibleCards++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+        
+        // Show/hide no results message
+        if (visibleCards === 0) {
+            noResults.style.display = 'block';
+        } else {
+            noResults.style.display = 'none';
+        }
+        
+        // Sort cards if needed
+        sortCards();
+    }
+    
+    // Sort function
+    function sortCards() {
+        const sortValue = sortOptions.value;
+        
+        if (sortValue === 'default') return;
+        
+        const visibleCards = cards.filter(card => card.style.display !== 'none');
+        
+        visibleCards.sort((a, b) => {
+            const titleA = a.querySelector('h3').textContent.toLowerCase();
+            const titleB = b.querySelector('h3').textContent.toLowerCase();
+            
+            if (sortValue === 'name-asc') {
+                return titleA.localeCompare(titleB);
+            } else if (sortValue === 'name-desc') {
+                return titleB.localeCompare(titleA);
+            }
+            return 0;
+        });
+        
+        // Reorder cards in DOM
+        visibleCards.forEach((card, index) => {
+            // Only move if position changed
+            if (cards[index] !== card) {
+                cardsContainer.insertBefore(card, cards[index]);
+            }
+        });
+    }
+    
+    // Event listeners
+    searchInput.addEventListener('input', filterCards);
+    categoryFilter.addEventListener('change', filterCards);
+    sortOptions.addEventListener('change', sortCards);
+    
+    // Initial filter (in case page loads with parameters)
+    filterCards();
+});
+    </script>
+{% endblock %}

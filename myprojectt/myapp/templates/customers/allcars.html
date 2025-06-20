@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- All Cars Section -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center mb-5" data-aos="fade-up">Explore All Our Available Cars</h2>
+
+    <div class="row">
+      <!-- Car Card 1 -->
+      <div class="col-md-4 mb-4" data-aos="fade-up">
+        <div class="card car-card shadow-sm h-100">
+          <img src="{% static 'images/sedan.avif' %}" class="card-img-top" alt="Sedan">
+          <div class="card-body text-center">
+            <h5 class="card-title">Sedan</h5>
+            <p class="card-text">Ideal for local travel and city rides. Comfortable & efficient.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Car Card 2 -->
+      <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="card car-card shadow-sm h-100">
+          <img src="{% static 'images/suv.jpg' %}" class="card-img-top" alt="SUV">
+          <div class="card-body text-center">
+            <h5 class="card-title">SUV</h5>
+            <p class="card-text">Spacious and perfect for family outstation trips.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Car Card 3 -->
+      <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="card car-card shadow-sm h-100">
+          <img src="{% static 'images/tempo.jpg' %}" class="card-img-top" alt="Tempo Traveller">
+          <div class="card-body text-center">
+            <h5 class="card-title">Tempo Traveller</h5>
+            <p class="card-text">Great for group tours. Spacious and comfortable seating.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Car Card 4 -->
+      <div class="col-md-4 mb-4" data-aos="fade-up">
+        <div class="card car-card shadow-sm h-100">
+          <img src="{% static 'images/innova.jpg' %}" class="card-img-top" alt="Innova">
+          <div class="card-body text-center">
+            <h5 class="card-title">Innova Crysta</h5>
+            <p class="card-text">Luxurious and reliable choice for long-distance travel.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Car Card 5 -->
+      <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="card car-card shadow-sm h-100">
+          <img src="{% static 'images/lsuv.jpg' %}" class="card-img-top" alt="Minivan">
+          <div class="card-body text-center">
+            <h5 class="card-title">Luxury SUV</h5>
+            <p class="card-text">Premium cars for weddings.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Car Card 6 -->
+      <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="card car-card shadow-sm h-100">
+          <img src="{% static 'images/lsedan.jpg' %}" class="card-img-top" alt="Luxury Car">
+          <div class="card-body text-center">
+            <h5 class="card-title">Luxury Sedan</h5>
+            <p class="card-text">Premium cars for weddings, corporate rides, and VIPs.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AOS -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+  AOS.init();
+</script>
+
+<!-- Optional Custom Styling -->
+<style>
+  .car-card {
+    border: none;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .car-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .car-card img {
+    height: 220px;
+    object-fit: cover;
+    border-bottom: 1px solid #eee;
+  }
+
+  .car-card .card-title {
+    font-weight: bold;
+    font-size: 1.25rem;
+    color: #333;
+  }
+
+  .car-card .card-text {
+    color: #666;
+    font-size: 0.95rem;
+  }
+</style>
+{% endblock %}

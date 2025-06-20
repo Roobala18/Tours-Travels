@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - Packages</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 40px;
+            color: #333;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #222;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 16px;
+            background-color: #4F46E5;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #3730A3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        th {
+            background: #EEF2FF;
+            text-align: left;
+            padding: 14px;
+            font-weight: 600;
+            color: #4F46E5;
+        }
+
+        td {
+            padding: 14px;
+            border-top: 1px solid #eee;
+        }
+
+        tr:hover {
+            background-color: #f9f9ff;
+        }
+
+        .pdf-link {
+            color: #10B981;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .pdf-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>📦 Admin Dashboard - Packages</h1>
+
+    <a class="btn" href="{% url 'add_package' %}">➕ Add New Package</a>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Customer</th>
+                <th>Amount</th>
+                <th>Download PDF</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for package in packages %}
+            <tr>
+                <td>{{ package.name }}</td>
+                <td>{{ package.customer }}</td>
+                <td>₹{{ package.amount }}</td>
+                <td><a class="pdf-link" href="{% url 'generate_package_pdf' package.id %}">⬇ Download</a></td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" style="text-align:center;">No packages available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
