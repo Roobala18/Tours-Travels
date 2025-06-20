@@ -2438,3 +2438,1016 @@ def destination_detail_inter(request, destination_slug):
     
     destinationinter= destination_data.get(destination_slug, {})
     return render(request, 'International/destination_detail_inter.html', {'destinationinter': destinationinter})
+
+
+# kerala
+
+def kerala_view(request):
+    return render(request, 'kerala/domestic_kerala.html')
+
+def all_kerala(request):
+    return render(request, 'kerala/all_kerala.html')
+
+def destination_kerala(request, destination_slug):
+    # Complete destination data for all 30 Kerala destinations
+    destination_data = {
+        'alleppey': {
+            'name': 'Alleppey',
+            'tagline': 'Venice of the East',
+            'duration': '3 Days',
+            'image_path': 'images/alleppey.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Backwater Cruise',
+                    'activities': [
+                        'Arrive in Alleppey and check into your houseboat',
+                        'Begin backwater cruise through palm-fringed canals',
+                        'Enjoy traditional Kerala lunch on board',
+                        'Evening relaxation on the houseboat deck'
+                    ],
+                    'highlight': 'Sunset views from the houseboat'
+                },
+                {
+                    'day': 2,
+                    'title': 'Village Life & Canoe Ride',
+                    'activities': [
+                        'Morning village walk to see coir-making and fishing',
+                        'Traditional Kerala breakfast at a local home',
+                        'Afternoon canoe ride through narrow canals',
+                        'Visit to Kumarakom Bird Sanctuary'
+                    ],
+                    'highlight': 'Village canoe experience'
+                },
+                {
+                    'day': 3,
+                    'title': 'Departure',
+                    'activities': [
+                        'Morning visit to Alleppey Beach',
+                        'Explore local markets for spices and crafts',
+                        'Depart from Alleppey'
+                    ],
+                    'highlight': 'Beach walk and shopping'
+                }
+            ]
+        },
+        'munnar': {
+            'name': 'Munnar',
+            'tagline': 'Kashmir of South India',
+            'duration': '4 Days',
+            'image_path': 'images/munnar.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Tea Gardens',
+                    'activities': [
+                        'Arrive in Munnar and check into your resort',
+                        'Visit Tea Museum to learn about tea processing',
+                        'Walk through lush tea plantations',
+                        'Evening at leisure'
+                    ],
+                    'highlight': 'Tea plantation walk'
+                },
+                {
+                    'day': 2,
+                    'title': 'Nature Exploration',
+                    'activities': [
+                        'Morning visit to Eravikulam National Park',
+                        'See Attukad Waterfalls',
+                        'Visit Mattupetty Dam',
+                        'Evening shopping for tea and spices'
+                    ],
+                    'highlight': 'Spotting Nilgiri Tahr at Eravikulam'
+                },
+                {
+                    'day': 3,
+                    'title': 'Echo Point & Top Station',
+                    'activities': [
+                        'Visit Echo Point and Kundala Lake',
+                        'Boat ride on the lake',
+                        'Excursion to Top Station for panoramic views',
+                        'Evening Ayurvedic massage'
+                    ],
+                    'highlight': 'Views from Top Station'
+                },
+                {
+                    'day': 4,
+                    'title': 'Departure',
+                    'activities': [
+                        'Morning visit to Pothamedu Viewpoint',
+                        'Last minute shopping',
+                        'Depart from Munnar'
+                    ],
+                    'highlight': 'Final views of tea gardens'
+                }
+            ]
+        },
+        'kochi': {
+            'name': 'Kochi',
+            'tagline': 'Queen of Arabian Sea',
+            'duration': '3 Days',
+            'image_path': 'images/kochi.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Fort Kochi',
+                    'activities': [
+                        'Arrive in Kochi and check into your hotel',
+                        'Visit Chinese fishing nets at sunset',
+                        'Walk through Jew Town and spice markets',
+                        'Kathakali dance performance in evening'
+                    ],
+                    'highlight': 'Chinese fishing nets at sunset'
+                },
+                {
+                    'day': 2,
+                    'title': 'Historical Exploration',
+                    'activities': [
+                        'Visit St. Francis Church and Santa Cruz Basilica',
+                        'Explore Mattancherry Palace',
+                        'Afternoon cruise to Bolgatty Palace',
+                        'Evening at Marine Drive'
+                    ],
+                    'highlight': 'Jewish Synagogue visit'
+                },
+                {
+                    'day': 3,
+                    'title': 'Departure',
+                    'activities': [
+                        'Morning visit to Cherai Beach',
+                        'Explore local art galleries',
+                        'Depart from Kochi'
+                    ],
+                    'highlight': 'Beach relaxation'
+                }
+            ]
+        },
+        'kovalam': {
+            'name': 'Kovalam',
+            'tagline': 'Beach Paradise',
+            'duration': '3 Days',
+            'image_path': 'images/kovalam.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Beach Relaxation',
+                    'activities': [
+                        'Arrive in Kovalam and check into beach resort',
+                        'Relax at Lighthouse Beach',
+                        'Evening Ayurvedic massage',
+                        'Seafood dinner by the beach'
+                    ],
+                    'highlight': 'First sunset at Kovalam'
+                },
+                {
+                    'day': 2,
+                    'title': 'Beach Activities',
+                    'activities': [
+                        'Morning yoga session on the beach',
+                        'Try surfing or swimming',
+                        'Visit nearby Vizhinjam Fishing Harbor',
+                        'Evening shopping for handicrafts'
+                    ],
+                    'highlight': 'Beach yoga experience'
+                },
+                {
+                    'day': 3,
+                    'title': 'Departure',
+                    'activities': [
+                        'Morning visit to Padmanabhaswamy Temple',
+                        'Final beach walk',
+                        'Depart from Kovalam'
+                    ],
+                    'highlight': 'Temple visit'
+                }
+            ]
+        },
+        'thekkady': {
+            'name': 'Thekkady',
+            'tagline': 'Wildlife Haven',
+            'duration': '3 Days',
+            'image_path': 'images/thekkady.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Jungle Safari',
+                    'activities': [
+                        'Arrive in Thekkady and check into jungle resort',
+                        'Afternoon boat safari on Periyar Lake',
+                        'Evening spice plantation tour',
+                        'Traditional Kalaripayattu performance'
+                    ],
+                    'highlight': 'Boat safari spotting wildlife'
+                },
+                {
+                    'day': 2,
+                    'title': 'Nature Walk & Elephant Ride',
+                    'activities': [
+                        'Morning guided nature walk in the forest',
+                        'Elephant ride experience',
+                        'Visit to local tribal village',
+                        'Evening at leisure'
+                    ],
+                    'highlight': 'Elephant interaction'
+                },
+                {
+                    'day': 3,
+                    'title': 'Departure',
+                    'activities': [
+                        'Morning visit to Chellarkovil viewpoint',
+                        'Purchase spices and tea',
+                        'Depart from Thekkady'
+                    ],
+                    'highlight': 'Final jungle views'
+                }
+            ]
+        },
+        'varkala': {
+            'name': 'Varkala',
+            'tagline': 'Cliffside Serenity',
+            'duration': '3 Days',
+            'image_path': 'images/varkala.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Cliff Walk',
+                    'activities': [
+                        'Arrive in Varkala and check into cliff resort',
+                        'Walk along the cliffside promenade',
+                        'Sunset viewing from North Cliff',
+                        'Evening beachside dining'
+                    ],
+                    'highlight': 'Cliffside sunset'
+                },
+                {
+                    'day': 2,
+                    'title': 'Beach Day & Temple Visit',
+                    'activities': [
+                        'Morning yoga session on the beach',
+                        'Visit Janardanaswamy Temple',
+                        'Relax at Papanasam Beach',
+                        'Evening Ayurvedic treatment'
+                    ],
+                    'highlight': 'Beach yoga'
+                },
+                {
+                    'day': 3,
+                    'title': 'Departure',
+                    'activities': [
+                        'Morning visit to Kappil Lake',
+                        'Final beach walk',
+                        'Depart from Varkala'
+                    ],
+                    'highlight': 'Lake views'
+                }
+            ]
+        },
+        'wayanad': {
+            'name': 'Wayanad',
+            'tagline': 'Green Paradise',
+            'duration': '4 Days',
+            'image_path': 'images/wayanad.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Nature Introduction',
+                    'activities': [
+                        'Arrive in Wayanad and check into eco-resort',
+                        'Visit Banasura Sagar Dam',
+                        'Walk through spice plantations',
+                        'Evening tribal dance performance'
+                    ],
+                    'highlight': 'Dam views'
+                },
+                {
+                    'day': 2,
+                    'title': 'Waterfalls & Caves',
+                    'activities': [
+                        'Visit Soochipara Waterfalls',
+                        'Explore Edakkal Caves',
+                        'Afternoon at Kuruva Island',
+                        'Evening at leisure'
+                    ],
+                    'highlight': 'Ancient cave carvings'
+                },
+                {
+                    'day': 3,
+                    'title': 'Wildlife & Plantations',
+                    'activities': [
+                        'Morning safari at Muthanga Wildlife Sanctuary',
+                        'Visit coffee and pepper plantations',
+                        'Evening visit to Pookode Lake'
+                    ],
+                    'highlight': 'Wildlife spotting'
+                },
+                {
+                    'day': 4,
+                    'title': 'Departure',
+                    'activities': [
+                        'Morning trek to Chembra Peak (optional)',
+                        'Purchase organic spices',
+                        'Depart from Wayanad'
+                    ],
+                    'highlight': 'Final mountain views'
+                }
+            ]
+        },
+        'bekal': {
+            'name': 'Bekal',
+            'tagline': 'Historic Seaside Fort',
+            'duration': '2 Days',
+            'image_path': 'images/bekal.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Fort Exploration',
+                    'activities': [
+                        'Arrive in Bekal and check into resort',
+                        'Explore Bekal Fort with sea views',
+                        'Walk along Bekal Beach',
+                        'Evening cultural performance'
+                    ],
+                    'highlight': 'Fort views at sunset'
+                },
+                {
+                    'day': 2,
+                    'title': 'Backwater Cruise & Departure',
+                    'activities': [
+                        'Morning backwater cruise in Valiyaparamba',
+                        'Visit nearby Kappil Beach',
+                        'Depart from Bekal'
+                    ],
+                    'highlight': 'Backwater experience'
+                }
+            ]
+        },
+        'kumarakom': {
+            'name': 'Kumarakom',
+            'tagline': 'Backwater Bliss',
+            'duration': '2 Days',
+            'image_path': 'images/kumarakom.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Backwater Experience',
+                    'activities': [
+                        'Arrive in Kumarakom and check into houseboat',
+                        'Backwater cruise through Vembanad Lake',
+                        'Visit Kumarakom Bird Sanctuary',
+                        'Evening relaxation on houseboat'
+                    ],
+                    'highlight': 'Bird watching'
+                },
+                {
+                    'day': 2,
+                    'title': 'Village Visit & Departure',
+                    'activities': [
+                        'Morning canoe ride through narrow canals',
+                        'Visit local village to see coir-making',
+                        'Depart from Kumarakom'
+                    ],
+                    'highlight': 'Village canoe experience'
+                }
+            ]
+        },
+        'trivandrum': {
+            'name': 'Trivandrum',
+            'tagline': 'Capital City',
+            'duration': '2 Days',
+            'image_path': 'images/trivandrum.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & City Tour',
+                    'activities': [
+                        'Arrive in Trivandrum and check into hotel',
+                        'Visit Padmanabhaswamy Temple',
+                        'Explore Napier Museum and Zoo',
+                        'Evening at Kovalam Beach'
+                    ],
+                    'highlight': 'Temple visit'
+                },
+                {
+                    'day': 2,
+                    'title': 'Cultural Sites & Departure',
+                    'activities': [
+                        'Visit Kuthiramalika Palace',
+                        'Explore Chalai Market',
+                        'Depart from Trivandrum'
+                    ],
+                    'highlight': 'Palace tour'
+                }
+            ]
+        },
+        'athirappilly': {
+            'name': 'Athirappilly',
+            'tagline': 'Niagara of India',
+            'duration': '2 Days',
+            'image_path': 'images/athirappilly.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Waterfall Experience',
+                    'activities': [
+                        'Arrive in Athirappilly and check into resort',
+                        'Visit Athirappilly Waterfalls',
+                        'Trek to Vazhachal Waterfalls',
+                        'Evening nature walk'
+                    ],
+                    'highlight': 'Waterfall views'
+                },
+                {
+                    'day': 2,
+                    'title': 'Jungle Safari & Departure',
+                    'activities': [
+                        'Morning jungle safari in Sholayar ranges',
+                        'Visit tribal village',
+                        'Depart from Athirappilly'
+                    ],
+                    'highlight': 'Wildlife spotting'
+                }
+            ]
+        },
+        'kannur': {
+            'name': 'Kannur',
+            'tagline': 'Land of Theyyam',
+            'duration': '3 Days',
+            'image_path': 'images/kannur.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Beach Exploration',
+                    'activities': [
+                        'Arrive in Kannur and check into hotel',
+                        'Visit Payyambalam Beach',
+                        'Explore St. Angelo Fort',
+                        'Evening Theyyam performance (seasonal)'
+                    ],
+                    'highlight': 'Fort views'
+                },
+                {
+                    'day': 2,
+                    'title': 'Cultural Heritage',
+                    'activities': [
+                        'Visit Muzhappilangad Drive-in Beach',
+                        'Explore Arakkal Museum',
+                        'See traditional loom weaving',
+                        'Evening at local markets'
+                    ],
+                    'highlight': 'Drive-in beach experience'
+                },
+                {
+                    'day': 3,
+                    'title': 'Departure',
+                    'activities': [
+                        'Morning visit to Parassinikadavu Temple',
+                        'Final beach walk',
+                        'Depart from Kannur'
+                    ],
+                    'highlight': 'Temple visit'
+                }
+            ]
+        },
+        'poovar': {
+            'name': 'Poovar',
+            'tagline': 'Golden Island',
+            'duration': '2 Days',
+            'image_path': 'images/poovar.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Island Exploration',
+                    'activities': [
+                        'Arrive in Poovar and check into island resort',
+                        'Boat cruise through backwaters to golden beach',
+                        'Visit floating restaurants',
+                        'Evening Ayurvedic massage'
+                    ],
+                    'highlight': 'Golden beach sunset'
+                },
+                {
+                    'day': 2,
+                    'title': 'Village Visit & Departure',
+                    'activities': [
+                        'Morning visit to fishing village',
+                        'Explore local handicrafts',
+                        'Depart from Poovar'
+                    ],
+                    'highlight': 'Village experience'
+                }
+            ]
+        },
+        'guruvayur': {
+            'name': 'Guruvayur',
+            'tagline': 'Temple Town',
+            'duration': '2 Days',
+            'image_path': 'images/guruvayur.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Temple Visit',
+                    'activities': [
+                        'Arrive in Guruvayur and check into hotel',
+                        'Visit Guruvayur Temple',
+                        'See Punnathur Kotta Elephant Sanctuary',
+                        'Evening temple rituals'
+                    ],
+                    'highlight': 'Temple darshan'
+                },
+                {
+                    'day': 2,
+                    'title': 'Cultural Sites & Departure',
+                    'activities': [
+                        'Morning visit to Mammiyur Temple',
+                        'Explore local markets',
+                        'Depart from Guruvayur'
+                    ],
+                    'highlight': 'Elephant sanctuary'
+                }
+            ]
+        },
+        'idukki': {
+            'name': 'Idukki',
+            'tagline': 'Spice Garden of Kerala',
+            'duration': '3 Days',
+            'image_path': 'images/idukki.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Dam Visit',
+                    'activities': [
+                        'Arrive in Idukki and check into resort',
+                        'Visit Idukki Arch Dam',
+                        'Explore Hill View Park',
+                        'Evening spice market visit'
+                    ],
+                    'highlight': 'Dam views'
+                },
+                {
+                    'day': 2,
+                    'title': 'Wildlife & Nature',
+                    'activities': [
+                        'Morning trek in Periyar National Park',
+                        'Visit Thommankuthu Waterfalls',
+                        'Evening campfire at resort'
+                    ],
+                    'highlight': 'Waterfall trek'
+                },
+                {
+                    'day': 3,
+                    'title': 'Departure',
+                    'activities': [
+                        'Morning visit to tea plantations',
+                        'Purchase fresh spices',
+                        'Depart from Idukki'
+                    ],
+                    'highlight': 'Plantation walk'
+                }
+            ]
+        },
+        'kollam': {
+            'name': 'Kollam',
+            'tagline': 'Gateway to Backwaters',
+            'duration': '2 Days',
+            'image_path': 'images/kollam.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Backwater Cruise',
+                    'activities': [
+                        'Arrive in Kollam and check into houseboat',
+                        'Ashtamudi Lake backwater cruise',
+                        'Visit Munroe Island',
+                        'Evening seafood dinner'
+                    ],
+                    'highlight': 'Houseboat stay'
+                },
+                {
+                    'day': 2,
+                    'title': 'Beach & Departure',
+                    'activities': [
+                        'Morning visit to Thangassery Beach',
+                        'Explore Portuguese ruins',
+                        'Depart from Kollam'
+                    ],
+                    'highlight': 'Beach walk'
+                }
+            ]
+        },
+        'ashtamudi': {
+            'name': 'Ashtamudi',
+            'tagline': 'Palm-fringed Lake',
+            'duration': '2 Days',
+            'image_path': 'images/ashtamudi.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Lake Cruise',
+                    'activities': [
+                        'Arrive in Ashtamudi and check into lake resort',
+                        'Boat cruise on Ashtamudi Lake',
+                        'Visit coconut villages',
+                        'Evening kayaking'
+                    ],
+                    'highlight': 'Lake sunset'
+                },
+                {
+                    'day': 2,
+                    'title': 'Village Tour & Departure',
+                    'activities': [
+                        'Morning village walk',
+                        'See traditional fishing methods',
+                        'Depart from Ashtamudi'
+                    ],
+                    'highlight': 'Village experience'
+                }
+            ]
+        },
+        'marari': {
+            'name': 'Marari',
+            'tagline': 'Quiet Fishing Village',
+            'duration': '2 Days',
+            'image_path': 'images/marari.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Beach Relaxation',
+                    'activities': [
+                        'Arrive in Marari and check into beach resort',
+                        'Relax at Marari Beach',
+                        'Visit local fishing village',
+                        'Evening seafood dinner'
+                    ],
+                    'highlight': 'Beach sunset'
+                },
+                {
+                    'day': 2,
+                    'title': 'Departure',
+                    'activities': [
+                        'Morning yoga on the beach',
+                        'Final beach walk',
+                        'Depart from Marari'
+                    ],
+                    'highlight': 'Beach yoga'
+                }
+            ]
+        },
+        'neyyar': {
+            'name': 'Neyyar',
+            'tagline': 'Wildlife & Dam',
+            'duration': '2 Days',
+            'image_path': 'images/neyyar.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Wildlife Safari',
+                    'activities': [
+                        'Arrive in Neyyar and check into resort',
+                        'Safari in Neyyar Wildlife Sanctuary',
+                        'Visit Lion Safari Park',
+                        'Evening dam views'
+                    ],
+                    'highlight': 'Wildlife spotting'
+                },
+                {
+                    'day': 2,
+                    'title': 'Nature Walk & Departure',
+                    'activities': [
+                        'Morning trek to Agasthyakoodam viewpoint',
+                        'Visit crocodile farm',
+                        'Depart from Neyyar'
+                    ],
+                    'highlight': 'Mountain views'
+                }
+            ]
+        },
+        'silent-valley': {
+            'name': 'Silent Valley',
+            'tagline': 'Pristine Rainforest',
+            'duration': '3 Days',
+            'image_path': 'images/silent-valley.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Park Introduction',
+                    'activities': [
+                        'Arrive near Silent Valley and check into eco-lodge',
+                        'Guided nature walk in buffer zone',
+                        'Evening documentary about the park'
+                    ],
+                    'highlight': 'First rainforest experience'
+                },
+                {
+                    'day': 2,
+                    'title': 'Deep Jungle Exploration',
+                    'activities': [
+                        'Full-day guided trek with packed lunch',
+                        'Visit Sairandhri viewpoint',
+                        'Evening discussion with naturalists'
+                    ],
+                    'highlight': 'Rainforest trek'
+                },
+                {
+                    'day': 3,
+                    'title': 'Departure',
+                    'activities': [
+                        'Morning bird watching session',
+                        'Visit tribal village (if permitted)',
+                        'Depart from Silent Valley'
+                    ],
+                    'highlight': 'Bird spotting'
+                }
+            ]
+        },
+        'ponmudi': {
+            'name': 'Ponmudi',
+            'tagline': 'Golden Peak',
+            'duration': '2 Days',
+            'image_path': 'images/ponmudi.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Hill Station Tour',
+                    'activities': [
+                        'Arrive in Ponmudi and check into resort',
+                        'Visit Golden Valley',
+                        'Trek to Varayadumotta peak',
+                        'Evening campfire'
+                    ],
+                    'highlight': 'Mountain views'
+                },
+                {
+                    'day': 2,
+                    'title': 'Nature Walk & Departure',
+                    'activities': [
+                        'Morning butterfly safari',
+                        'Visit tea estates',
+                        'Depart from Ponmudi'
+                    ],
+                    'highlight': 'Butterfly spotting'
+                }
+            ]
+        },
+        'cherai': {
+            'name': 'Cherai',
+            'tagline': 'Golden Beach',
+            'duration': '2 Days',
+            'image_path': 'images/cherai.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Beach Day',
+                    'activities': [
+                        'Arrive in Cherai and check into beach resort',
+                        'Relax at Cherai Beach',
+                        'Visit local fishing village',
+                        'Evening seafood barbecue'
+                    ],
+                    'highlight': 'Beach sunset'
+                },
+                {
+                    'day': 2,
+                    'title': 'Backwater Cruise & Departure',
+                    'activities': [
+                        'Morning backwater cruise',
+                        'Visit Munambam Harbour',
+                        'Depart from Cherai'
+                    ],
+                    'highlight': 'Backwater experience'
+                }
+            ]
+        },
+        'thrissur': {
+            'name': 'Thrissur',
+            'tagline': 'Cultural Capital',
+            'duration': '2 Days',
+            'image_path': 'images/thrissur.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Cultural Tour',
+                    'activities': [
+                        'Arrive in Thrissur and check into hotel',
+                        'Visit Vadakkunnathan Temple',
+                        'Explore Kerala Kalamandalam',
+                        'Evening cultural show'
+                    ],
+                    'highlight': 'Temple visit'
+                },
+                {
+                    'day': 2,
+                    'title': 'Heritage Sites & Departure',
+                    'activities': [
+                        'Visit Athirapally Waterfalls',
+                        'See Shakthan Thampuran Palace',
+                        'Depart from Thrissur'
+                    ],
+                    'highlight': 'Waterfall visit'
+                }
+            ]
+        },
+        'parambikulam': {
+            'name': 'Parambikulam',
+            'tagline': 'Tiger Reserve',
+            'duration': '3 Days',
+            'image_path': 'images/parambikulam.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Jungle Introduction',
+                    'activities': [
+                        'Arrive in Parambikulam and check into forest lodge',
+                        'Evening safari in buffer zone',
+                        'Night campfire with naturalist talk'
+                    ],
+                    'highlight': 'First wildlife experience'
+                },
+                {
+                    'day': 2,
+                    'title': 'Full Day Safari',
+                    'activities': [
+                        'Morning and afternoon jungle safaris',
+                        'Boat ride on Parambikulam Reservoir',
+                        'Visit tribal colony'
+                    ],
+                    'highlight': 'Tiger spotting chance'
+                },
+                {
+                    'day': 3,
+                    'title': 'Nature Walk & Departure',
+                    'activities': [
+                        'Morning bird watching trek',
+                        'Visit teak plantations',
+                        'Depart from Parambikulam'
+                    ],
+                    'highlight': 'Bird watching'
+                }
+            ]
+        },
+        'neyyattinkara': {
+            'name': 'Neyyattinkara',
+            'tagline': 'Traditional Crafts',
+            'duration': '1 Day',
+            'image_path': 'images/neyyattinkara.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Craft Village Tour',
+                    'activities': [
+                        'Arrive in Neyyattinkara',
+                        'Visit traditional craft workshops',
+                        'See wood carving and metal work',
+                        'Explore local markets'
+                    ],
+                    'highlight': 'Craft demonstrations'
+                }
+            ]
+        },
+        'alappuzha': {
+            'name': 'Alappuzha',
+            'tagline': 'Backwater Hub',
+            'duration': '2 Days',
+            'image_path': 'images/alappuzha.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Canal Cruise',
+                    'activities': [
+                        'Arrive in Alappuzha and check into houseboat',
+                        'Canal cruise through backwaters',
+                        'Visit Pathiramanal Island',
+                        'Evening onboard relaxation'
+                    ],
+                    'highlight': 'Houseboat stay'
+                },
+                {
+                    'day': 2,
+                    'title': 'Beach & Departure',
+                    'activities': [
+                        'Morning visit to Alappuzha Beach',
+                        'See lighthouse and pier',
+                        'Depart from Alappuzha'
+                    ],
+                    'highlight': 'Beach walk'
+                }
+            ]
+        },
+        'malampuzha': {
+            'name': 'Malampuzha',
+            'tagline': 'Garden & Dam',
+            'duration': '1 Day',
+            'image_path': 'images/malampuzha.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Gardens & Dam Visit',
+                    'activities': [
+                        'Arrive in Malampuzha',
+                        'Explore Malampuzha Gardens',
+                        'Visit Rock Garden and Fantasy Park',
+                        'See Malampuzha Dam'
+                    ],
+                    'highlight': 'Garden sculptures'
+                }
+            ]
+        },
+        'palakkad': {
+            'name': 'Palakkad',
+            'tagline': 'Gateway to Kerala',
+            'duration': '2 Days',
+            'image_path': 'images/palakkad.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Fort Visit',
+                    'activities': [
+                        'Arrive in Palakkad and check into hotel',
+                        'Visit Palakkad Fort',
+                        'Explore Jain Temple',
+                        'Evening at Malampuzha Gardens'
+                    ],
+                    'highlight': 'Fort history'
+                },
+                {
+                    'day': 2,
+                    'title': 'Nature & Departure',
+                    'activities': [
+                        'Morning visit to Silent Valley viewpoint',
+                        'Explore Dhoni waterfalls',
+                        'Depart from Palakkad'
+                    ],
+                    'highlight': 'Waterfall visit'
+                }
+            ]
+        },
+        'kuttanad': {
+            'name': 'Kuttanad',
+            'tagline': 'Rice Bowl of Kerala',
+            'duration': '2 Days',
+            'image_path': 'images/kuttanad.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Backwater Experience',
+                    'activities': [
+                        'Arrive in Kuttanad and check into houseboat',
+                        'Cruise through paddy fields',
+                        'Visit local farming communities',
+                        'Evening onboard relaxation'
+                    ],
+                    'highlight': 'Unique below-sea-level farming'
+                },
+                {
+                    'day': 2,
+                    'title': 'Village Tour & Departure',
+                    'activities': [
+                        'Morning canoe ride through narrow canals',
+                        'See traditional farming techniques',
+                        'Depart from Kuttanad'
+                    ],
+                    'highlight': 'Canoe experience'
+                }
+            ]
+        },
+        'sabarimala': {
+            'name': 'Sabarimala',
+            'tagline': 'Sacred Pilgrimage',
+            'duration': '3 Days',
+            'image_path': 'images/sabarimala.jpg',
+            'itinerary': [
+                {
+                    'day': 1,
+                    'title': 'Arrival & Trek Preparation',
+                    'activities': [
+                        'Arrive at base camp and check accommodations',
+                        'Complete pilgrimage formalities',
+                        'Evening spiritual discourse'
+                    ],
+                    'highlight': 'Pilgrimage atmosphere'
+                },
+                {
+                    'day': 2,
+                    'title': 'Pilgrimage Trek',
+                    'activities': [
+                        'Early morning start for forest trek',
+                        'Reach Sabarimala Temple by evening',
+                        'Participate in temple rituals'
+                    ],
+                    'highlight': 'Temple darshan'
+                },
+                {
+                    'day': 3,
+                    'title': 'Return Journey',
+                    'activities': [
+                        'Morning rituals at temple',
+                        'Begin return trek',
+                        'Depart from base camp'
+                    ],
+                    'highlight': 'Spiritual experience'
+                }
+            ]
+        }
+    }
+    
+    destinationkerala = destination_data.get(destination_slug, {})
+    return render(request, 'kerala/destination_kerala.html', {'destination': destinationkerala})

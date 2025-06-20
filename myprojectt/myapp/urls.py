@@ -18,5 +18,9 @@ urlpatterns = [
     path('interdestinations/', views.all_international, name='all_international'),
     path('interdestination/<slug:destination_slug>/', views.destination_detail_inter, name='destination_detail_inter'),
 
+    path('kerala/', views.kerala_view, name='kerala'),
+    path('keraladestinations/', views.all_kerala, name='all_kerala'),
+    path('kerdestination/<slug:destination_slug>/', views.destination_kerala, name='destination_kerala'),
+
      
 ]
