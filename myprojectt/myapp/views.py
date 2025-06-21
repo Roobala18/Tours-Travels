@@ -2441,8 +2441,9 @@ def destination_detail_inter(request, destination_slug):
 
 
 # kerala
+from django.shortcuts import render
 
-def kerala_view(request):
+def kerala(request):
     return render(request, 'kerala/domestic_kerala.html')
 
 def all_kerala(request):
@@ -3449,5 +3450,6 @@ def destination_kerala(request, destination_slug):
         }
     }
     
-    destinationkerala = destination_data.get(destination_slug, {})
-    return render(request, 'kerala/destination_kerala.html', {'destination': destinationkerala})
+    destination = destination_data.get(destination_slug, {})
+    return render(request, 'kerala/destination_kerala.html', {'destination': destination})
+

@@ -14,13 +14,15 @@ urlpatterns = [
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('add-package/', views.add_package, name='add_package'),
 
-    path('international', views.home, name='international'),
+    path('international/', views.home, name='international'),
     path('interdestinations/', views.all_international, name='all_international'),
     path('interdestination/<slug:destination_slug>/', views.destination_detail_inter, name='destination_detail_inter'),
 
-    path('kerala/', views.kerala_view, name='kerala'),
-    path('keraladestinations/', views.all_kerala, name='all_kerala'),
-    path('kerdestination/<slug:destination_slug>/', views.destination_kerala, name='destination_kerala'),
+
+    path('kerala/', views.kerala, name='kerala'),
+    path('destinations/kerala/', views.all_kerala, name='all_kerala'),
+    path('destination/kerala/<slug:destination_slug>/', views.destination_kerala, name='destination_kerala'),
+
 
      
 ]

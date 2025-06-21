@@ -1,1163 +1,1353 @@
+{% extends 'base.html' %}
 {% load static %}
+
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Explore Kerala - Travel & Tours</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root {
-            --primary-color: #4e54c8;
-            --secondary-color: #8f94fb;
-            --accent-color: #ff7e5f;
-            --light-color: #f8f9fa;
-            --dark-color: #343a40;
-        }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: url('https://img.freepik.com/free-vector/realistic-travel-background-with-elements_52683-77789.jpg') no-repeat center center fixed;
-            background-size: cover;
-            color: #333;
-            overflow-x: hidden;
-            min-height: 100vh;
-            position: relative;
-        }
-        
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 254, 254, 0.85);
-            z-index: -1;
-        }
-        
- 
-        
-        .hero-section {
-            padding: 100px 0;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero-section h1 {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: var(--dark-color);
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-            animation: fadeInDown 1s ease;
-        }
-        
-        .hero-section p {
-            font-size: 1.2rem;
-            max-width: 700px;
-            margin: 0 auto 30px;
-            color: #555;
-            animation: fadeInUp 1s ease;
-        }
-        
-        .btn-explore {
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            border: none;
-            color: white;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 15px rgba(78, 84, 200, 0.4);
-            transition: all 0.3s;
-            animation: pulse 2s infinite;
-        }
-        
-        .btn-explore:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(78, 84, 200, 0.6);
-            color: white;
-        }
-        
-        .section-title {
-            text-align: center;
-            margin-bottom: 50px;
-            position: relative;
-        }
-        
-        .section-title h2 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--dark-color);
-            display: inline-block;
-            padding-bottom: 10px;
-        }
-        
-        .section-title h2::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-        }
-        
-.destination-section {
-        padding: 80px 0;
-        position: relative;
-        overflow: hidden;
-        background: url("{% static 'images/background.jpg' %}") no-repeat center center;
-        background-size: cover;
-        background-attachment: fixed;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{{ destination.name }} Tour Itinerary</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #8e44ad;
+      --secondary: #e67e22;
+      --accent: #27ae60;
+      --light: #f5f6fa;
+      --dark: #2c3e50;
+      --text: #34495e;
     }
-        .destination-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 20px;
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-        }
-        
-        .card-container {
-            perspective: 1000px;
-            height: 500px;
-            position: relative;
-            margin: 30px 0; 
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all 0.8s ease;
-        }
-            .card-container.animate {
-        opacity: 1;
-        transform: translateY(0);
+
+    body {
+      background-image: url("{% static 'images/features-background1.jpg' %}");
+      color: var(--text);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .hero {
+      position: relative;
+      height: 60vh;
+      overflow: hidden;
+      margin-bottom: 2rem;
     }
     
- 
-    .card-container:nth-child(1) { transition-delay: 0.1s; }
-    .card-container:nth-child(2) { transition-delay: 0.2s; }
-    .card-container:nth-child(3) { transition-delay: 0.3s; }
-    .card-container:nth-child(4) { transition-delay: 0.4s; }
-    .card-container:nth-child(5) { transition-delay: 0.5s; }
-    .card-container:nth-child(6) { transition-delay: 0.6s; }
-        
-        .destination-card {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 1s;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            cursor: pointer;
-        }
-        
-        .destination-card:hover {
-            transform: rotateY(180deg);
-        }
-        
-        .card-front, .card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            border-radius: 15px;
-            overflow: hidden;
-        }
-        
-        .card-front {
-            background: white;
-        }
-        
-        .card-back {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            transform: rotateY(180deg);
-            display: flex;
-            flex-direction: column;
-             justify-content: space-between !important;
- align-items: center;
-           
-            padding: 20px;
-            
-
-        }
-        
-        .card-img {
-            height: 60%;
-            overflow: hidden;
-            position: relative
-        }
-        .card-img::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 20px;
-        background: linear-gradient(to top, rgba(255,255,255,0.8), transparent);
-    }
-
-        
-        .card-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.8s cubic-bezier(0.25, 0.45, 0.45, 0.95);
-
-        }
-        
-        .destination-card:hover .card-img img {
-            transform: scale(1.1);
-        }
-        
-        .card-body {
-            padding: 20px;
-            height: 40%;
-            display: flex;
-            flex-direction: column;
-            background: white;
-           
-            /* margin-top: 20px; */
-        }
-        
-        .card-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: var(--dark-color);
-            transition: all 0.3s;
-        }
-        
-            .destination-card:hover .card-title {
-        color: var(--primary-color);
-    }
-
-        .card-text {
-            color: #666;
-            flex-grow: 1;
-            height: 50px;
-        }
-        
-        .rating 
-        {
-            color: #ffc107;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            margin-top: 5px;
-
-        }
-        .card-bottom-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 15px;
-}
-        
-        .back-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        
-        .back-text {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .btn-book {
-
-               padding: 6px 14px;
-              background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-               color: white;
-               border-radius: 20px;
-               text-decoration: none;
-              font-weight: bold;
-                transition: background-color 0.3s ease;
-
-        }
-        
-        .btn-book:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(78, 84, 200, 0.6);
-            color: white;
-        }
-            /* .btn-book::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-        transition: 0.5s;
-    } */
-    
-    /* .btn-book:hover::before {
-        left: 100%;
-    } */
-        
-        .carousel-control-prev, .carousel-control-next {
-        width: 50px;
-        height: 50px;
-        background: rgba(255,255,255,0.8);
-        border-radius: 50%;
-        top: 50%;
-        transform: translateY(-50%);
-        opacity: 1;
-        transition: all 0.3s;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-    .carousel-control-prev {
-        left: -80px;
+    #map {
+      height: 100%;
+      width: 100%;
+      z-index: 1;
     }
     
-    .carousel-control-next {
-        right: -80px;
-    }
-    .carousel-control-prev:hover, .carousel-control-next:hover {
-        background: white;
-        transform: translateY(-50%) scale(1.1);
+    .destination-header {
+      margin-bottom: 2rem;
     }
     
-        
-    .carousel-control-prev-icon, .carousel-control-next-icon {
-        background-size: 60%;
-        filter: invert(30%) sepia(50%) saturate(1500%) hue-rotate(220deg) brightness(90%) contrast(90%);
-        }    .btn-view-more-container {
-        text-align: center;
-        margin-top: 40px;
+    .destination-title {
+      color: var(--primary);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
     }
     
-    .btn-view-more {
-        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-        color: white;
-        border: none;
-        padding: 12px 30px;
-        border-radius: 50px;
-        font-weight: 600;
-        font-size: 1.1rem;
-        box-shadow: 0 4px 15px rgba(78, 84, 200, 0.4);
-        transition: all 0.3s;
-        position: relative;
-        overflow: hidden;
-        display: inline-block;
-        text-decoration: none;
+    .destination-tagline {
+      color: var(--dark);
+      font-size: 1.2rem;
     }
     
-    .btn-view-more:hover {
-        transform: translateY(-3px) scale(1.05);
-        box-shadow: 0 6px 20px rgba(78, 84, 200, 0.6);
-        color: white;
+    .car-marker {
+      position: relative;
+      transform-origin: center;
+      transition: transform 0.2s ease-out;
+    }
+
+    .car-marker img {
+      width: 48px;
+      height: 48px;
+      transform-origin: center center;
+      filter: drop-shadow(0 0 5px rgba(0,0,0,0.3));
+      animation: bounce 0.5s infinite alternate;
     }
     
-    .btn-view-more::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-        transition: 0.5s;
+    @keyframes bounce {
+      from { transform: translateY(0) rotate(var(--rotation)); }
+      to { transform: translateY(-1px) rotate(var(--rotation)); }
+    }
+
+    .day-card {
+      border-left: 5px solid var(--primary);
+      background-color: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+      margin-bottom: 40px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .day-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .day-number {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .highlight-box {
+      background-color: rgba(231, 76, 60, 0.05);
+      border-left: 4px solid var(--secondary);
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 15px;
+      color: var(--dark);
+      font-style: italic;
+    }
+
+    .btn-book {
+      background: var(--primary);
+      color: white;
+      padding: 12px 28px;
+      font-size: 1.1rem;
+      border-radius: 50px;
+      border: none;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+
+    .btn-book:hover {
+      background: var(--secondary);
+    }
+
+    .section-title h2 {
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    .section-title p {
+      color: var(--dark);
     }
     
-    .btn-view-more:hover::before {
-        left: 100%;
+    .custom-back-btn {
+      
+      color: white;
+      background-color: transparent;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      border-radius: 50px;
+      padding: 8px 20px;
+    }
+
+    .custom-back-btn:hover {
+      background-color: var(--secondary);
+      color: white;
+    }
+
+    .custom-back-btn svg {
+      transition: transform 0.3s ease;
+    }
+
+    .custom-back-btn:hover svg {
+      transform: translateX(-4px);
+    }
+
+    /* Route selector styles */
+    .route-selector {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .route-selector select {
+      padding: 5px 10px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
+
+    /* Custom red location icon */
+    .red-icon {
+      background-color: red;
+      border-radius: 50%;
+      border: 2px solid white;
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    .red-icon::after {
+      content: "";
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 8px solid red;
+    }
+
+    /* Intermediate point markers */
+    .waypoint-icon {
+      background-color: #3498db;
+      border-radius: 50%;
+      border: 2px solid white;
+      width: 12px;
+      height: 12px;
+      display: block;
     }
     
-        
-        footer {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 50px 0 20px;
-            position: relative;
-        }
-        
-        .footer-logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-        
-        .footer-links h5 {
-            font-weight: 600;
-            margin-bottom: 20px;
-            position: relative;
-            display: inline-block;
-        }
-        
-        .footer-links h5::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 0;
-            width: 40px;
-            height: 2px;
-            background-color: white;
-        }
-        
-        .footer-links ul {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .footer-links li {
-            margin-bottom: 10px;
-        }
-        
-        .footer-links a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-        
-        .footer-links a:hover {
-            color: white;
-            padding-left: 5px;
-        }
-        
-        .social-icons {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .social-icons a {
-            color: white;
-            background: rgba(255, 255, 255, 0.2);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-        
-        .social-icons a:hover {
-            background: white;
-            color: var(--primary-color);
-            transform: translateY(-5px);
-        }
-        
-        .copyright {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            text-align: center;
-            color: rgba(255, 255, 255, 0.7);
-        }
-        /* featured-cards */
-                .features-section {
-            padding: 80px 0;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        }
-        
-        .feature-box {
-            text-align: center;
-            padding: 30px;
-            border-radius: 10px;
-            background: white;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s;
-            height: 100%;
-            margin-bottom: 30px;
-        }
-        
-        .feature-box:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-        }
-        
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: var(--primary-color);
-            animation: float 3s ease-in-out infinite !important;
-        }
-        
-        .feature-box:nth-child(2) .feature-icon {
-            animation-delay: 0.3s;
-        }
-        
-        .feature-box:nth-child(3) .feature-icon {
-            animation-delay: 0.6s;
-        }
-        
-        .feature-box:nth-child(4) .feature-icon {
-            animation-delay: 0.9s;
-        }
-        
-        .feature-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: var(--dark-color);
-        }
-        
-        .feature-text {
-            color: #666;
-        }
-        
-        /* Animations */
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-        
-        /* Responsive Styles */
-            @media (max-width: 1200px) {
-        .card-container {
-            height: 450px;
-        }
+    /* Route point tags */
+    .route-point-tag {
+      position: absolute;
+      background: white;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      white-space: nowrap;
+      transform: translate(-50%, -100%);
+      margin-top: -10px;
+      z-index: 100;
     }
-        @media (max-width: 992px) {
-            .hero-section h1 {
-                font-size: 2.8rem;
-            }
-            
-            .section-title h2 {
-                font-size: 2rem;
-            }
-            
-            .card-container {
-                height: 400px;
-            }
-                 .card-title {
-            font-size: 1.3rem;
-        }
-                .back-title {
-            font-size: 1.5rem;
-        }
-                .carousel-control-prev {
-            left: -15px;
-        }
-                .carousel-control-next {
-            right: -15px;
-        }
-
-        }
-        
-        @media (max-width: 768px) {
-            .hero-section {
-                padding: 70px 0;
-            }
-            
-            .hero-section h1 {
-                font-size: 2.2rem;
-            }
-            
-            .hero-section p {
-                font-size: 1rem;
-            }
-            
-            .section-title h2 {
-                font-size: 1.8rem;
-            }
-            
-            .card-container {
-                height:400px;
-                margin: 15px 0;
-            }
-            
-            .card-title {
-                font-size: 1.2rem
-            }
-            .card-body{
-            padding: 15px;
-            /* height: 500px; */
-            
-        }
-               .card-text {
-            font-size: 0.9rem;
-            height: 25px;
-
-        }
-                .back-title {
-            font-size: 1.3rem;
-        }
-        
-        .back-text {
-            font-size: 0.9rem;
-        }
-        
-        /* .btn-book {
-            padding: 8px 15px;
-            font-size: 0.9rem;
-        } */
-        
-        .carousel-control-prev, .carousel-control-next {
-            width: 40px;
-            height: 40px;
-        }
-            
-        }
-        
-        @media (max-width: 576px) {
-            .navbar-brand {
-                font-size: 1.5rem;
-            }
-            
-            .hero-section h1 {
-                font-size: 1.8rem;
-            }
-            
-            .btn-explore {
-                padding: 10px 20px;
-                font-size: 1rem;
-            }
-            
-            .card-container {
-                height: 400px;
-            }
-                        .feature-icon {
-                font-size: 2.5rem;
-            }
-            
-            .feature-title {
-                font-size: 1.3rem;
-            }
-                    .card-title {
-            font-size: 1.1rem;
-        }
-        
-
-        
-        .btn-view-more {
-            padding: 10px 20px;
-            font-size: 1rem;
-        }
-
-        }
-        .features-section {
-        padding: 80px 0;
-        position: relative;
-        overflow: hidden;
-        background: url("{% static 'images/features-background.jpg' %}") no-repeat center center;
-        background-size: cover;
-        background-attachment: fixed;
+    
+    .route-point-tag::after {
+      content: "";
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 4px solid white;
     }
-        .features-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 20px;
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-        }
-        .btn-view-more {
-    background: var(--secondary-color);
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 50px;
-    font-weight: 500;
-    font-size: 0.9rem;
-    transition: all 0.3s;
-    display: inline-block;
-    margin-top: 50px;
-    text-decoration: none;
-    margin-left: 120px;
-}
+    
+    .distance-badge {
+      background-color: var(--accent);
+      color: white;
+      font-size: 10px;
+      padding: 2px 4px;
+      border-radius: 4px;
+      margin-left: 4px;
+    }
+    
+    /* Destination tag styling */
+    .destination-tag {
+      background-color: rgba(255, 0, 0, 0.1);
+      border-left: 3px solid red;
+    }
 
-.btn-view-more:hover {
-    background: var(--primary-color);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    color: white;
-}
+    /* Hide routing machine controls */
+    .leaflet-routing-container {
+      display: none;
+    }
 
-.card-buttons {
-    display: flex;
-    align-items: center;
-
-
-}
-
-
-.back-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
-}
-        
-
-    </style>
+    /* Confetti canvas */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1000;
+      pointer-events: none;
+    }
+  </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <!-- <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <i class="fas fa-map-marked-alt"></i> Tamil Nadu Tours
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Destinations</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Packages</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">About Us</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Contact</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav> -->
 
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="container">
-            <h1>Discover the Wonders of Tamil Nadu</h1>
-            <p>Explore the rich cultural heritage, breathtaking landscapes, and vibrant traditions of Tamil Nadu with our expertly curated tour packages.</p>
-            <a href="#destinations" class="btn btn-explore">Explore Destinations</a>
+  <!-- Hero Section with Map -->
+  <section class="hero">
+    <div id="map"></div>
+    <!-- Route selector -->
+    <div id="routeSelector" class="route-selector" style="display: none;">
+      <label for="routeOption">Select Route:</label>
+      <select id="routeOption">
+        <option value="fastest">Fastest Route</option>
+        <option value="scenic">Scenic Route</option>
+        <option value="historic">Historic Route</option>
+      </select>
+    </div>
+  </section>
+  
+  <div class="container">
+    <!-- Destination Header -->
+    <div class="destination-header">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="destination-title">{{ destination.name }} Tour</h1>
+          <p class="destination-tagline">{{ destination.tagline }}</p>
         </div>
+        <div>
+          <a href="{% url 'all_kerala' %}" class="btn custom-back-btn d-inline-flex align-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left-circle me-2" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0-1A6 6 0 1 0 8 2a6 6 0 0 0 0 12z"/>
+              <path fill-rule="evenodd" d="M8.354 11.354a.5.5 0 0 1-.708 0L5.5 9.207l-.354.353a.5.5 0 0 1-.708-.707l1.5-1.5a.5.5 0 0 1 .708 0l1.5 1.5a.5.5 0 0 1 0 .707z"/>
+              <path fill-rule="evenodd" d="M11.5 8a.5.5 0 0 1-.5.5H5a.5.5 0 0 1 0-1h6a.5.5 0 0 1 .5.5z"/>
+            </svg>
+            Back to All Destinations
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <section class="py-5">
+      <div class="container">
+        <div class="text-center mb-5 section-title">
+          <h2>{{ destination.duration }} Itinerary</h2>
+          <p>Explore the charm of {{ destination.name }} day by day</p>
+        </div>
+
+        {% for day in destination.itinerary %}
+          <div class="day-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+            <div class="day-number">Day {{ day.day }}: {{ day.title }}</div>
+            <ul class="mb-3">
+              {% for activity in day.activities %}
+                <li>{{ activity }}</li>
+              {% endfor %}
+            </ul>
+            <div class="highlight-box">
+              <strong>Highlight:</strong> {{ day.highlight }}
+            </div>
+          </div>
+        {% endfor %}
+
+        <div class="text-center mt-5">
+          <a href="https://forms.gle/qKpo3btNDZfFWBXs8" class="btn-book">Book This Tour</a>
+        </div>
+      </div>
     </section>
+  </div>
 
-    <!-- Destination Section -->
-    <section class="destination-section" id="destinations">
-        <div class="container">
-            <div class="section-title">
-                <h2>Popular Kerala Destinations</h2>
-            </div>
-            
-            <div id="destinationCarousel" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <div class="row g-4">
-                            <!-- Card 1 - Munnar -->
-                            <div class="col-lg-4 col-md-6">
-                                <div class="card-container">
-                                    <div class="destination-card">
-                                        <div class="card-img">
-                                            <img src="{% static 'images/munnar.jpg' %}" alt="Munnar Tea Gardens">
-                                        </div>
-                                        <div class="card-body">
-                                            <h3 class="card-title">Munnar</h3>
-                                            <p class="card-text">Famous for its tea plantations, misty hills, and exotic wildlife.</p>
-                                            <div class="card-bottom-row">
-                                                <div class="rating">
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star-half-alt"></i>
-                                                    <span>4.5/5</span>
-                                                </div>
-                                                <div class="card-buttons">
-                                                    <a href="{% url 'destination_kerala' 'munnar' %}" class="btn-book">Book Tour</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Card 2 - Alleppey -->
-                            <div class="col-lg-4 col-md-6">
-                                <div class="card-container">
-                                    <div class="destination-card">
-                                        <div class="card-img">
-                                            <img src="{% static 'images/alleppey.jpg' %}" alt="Alleppey Backwaters">
-                                        </div>
-                                        <div class="card-body">
-                                            <h3 class="card-title">Alleppey</h3>
-                                            <p class="card-text">Known as the 'Venice of the East' for its beautiful backwaters.</p>
-                                            <div class="card-bottom-row">
-                                                <div class="rating">
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <span>4.9/5</span>
-                                                </div>
-                                                <div class="card-buttons">
-                                                    <a href="{% url 'destination_kerala' 'alleppey' %}" class="btn-book">Book Tour</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Card 3 - Kochi -->
-                            <div class="col-lg-4 col-md-6">
-                                <div class="card-container">
-                                    <div class="destination-card">
-                                        <div class="card-img">
-                                            <img src="{% static 'images/kochi.jpg' %}" alt="Kochi Fort">
-                                        </div>
-                                        <div class="card-body">
-                                            <h3 class="card-title">Kochi</h3>
-                                            <p class="card-text">A vibrant port city with colonial architecture and Chinese fishing nets.</p>
-                                            <div class="card-bottom-row">
-                                                <div class="rating">
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="far fa-star"></i>
-                                                    <span>4.3/5</span>
-                                                </div>
-                                                <div class="card-buttons">
-                                                    <a href="{% url 'destination_kerala' 'kochi' %}" class="btn-book">Book Tour</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="carousel-item">
-                        <div class="row g-4">
-                            <!-- Card 4 - Wayanad -->
-                            <div class="col-lg-4 col-md-6">
-                                <div class="card-container">
-                                    <div class="destination-card">
-                                        <div class="card-img">
-                                            <img src="{% static 'images/wayanad.jpg' %}" alt="Wayanad Wildlife">
-                                        </div>
-                                        <div class="card-body">
-                                            <h3 class="card-title">Wayanad</h3>
-                                            <p class="card-text">Lush green forests, waterfalls, and rich tribal heritage.</p>
-                                            <div class="card-bottom-row">
-                                                <div class="rating">
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star-half-alt"></i>
-                                                    <span>4.6/5</span>
-                                                </div>
-                                                <div class="card-buttons">
-                                                    <a href="{% url 'destination_kerala' 'wayanad' %}" class="btn-book">Book Tour</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Card 5 - Kovalam -->
-                            <div class="col-lg-4 col-md-6">
-                                <div class="card-container">
-                                    <div class="destination-card">
-                                        <div class="card-img">
-                                            <img src="{% static 'images/kovalam.jpg' %}" alt="Kovalam Beach">
-                                        </div>
-                                        <div class="card-body">
-                                            <h3 class="card-title">Kovalam</h3>
-                                            <p class="card-text">Famous for its crescent-shaped beaches and lighthouse.</p>
-                                            <div class="card-bottom-row">
-                                                <div class="rating">
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star-half-alt"></i>
-                                                    <span>4.6/5</span>
-                                                </div>
-                                                <div class="card-buttons">
-                                                    <a href="{% url 'destination_kerala' 'kovalam' %}" class="btn-book">Book Tour</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Card 6 - Thekkady -->
-                            <div class="col-lg-4 col-md-6">
-                                <div class="card-container">
-                                    <div class="destination-card">
-                                        <div class="card-img">
-                                            <img src="{% static 'images/thekkady.jpg' %}" alt="Periyar Wildlife Sanctuary">
-                                        </div>
-                                        <div class="card-body">
-                                            <h3 class="card-title">Thekkady</h3>
-                                            <p class="card-text">Home to Periyar Wildlife Sanctuary and spice plantations.</p>
-                                            <div class="card-bottom-row">
-                                                <div class="rating">
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="far fa-star"></i>
-                                                    <span>4.2/5</span>
-                                                </div>
-                                                <div class="card-buttons">
-                                                    <a href="{% url 'destination_kerala' 'thekkady' %}" class="btn-book">Book Tour</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="carousel-item">
-                        <div class="row g-4">
-                            <!-- Card 7 - Varkala -->
-                            <div class="col-lg-4 col-md-6">
-                                <div class="card-container">
-                                    <div class="destination-card">
-                                        <div class="card-img">
-                                            <img src="{% static 'images/varkala.jpg' %}" alt="Varkala Cliff">
-                                        </div>
-                                        <div class="card-body">
-                                            <h3 class="card-title">Varkala</h3>
-                                            <p class="card-text">Stunning cliffside beaches and natural mineral springs.</p>
-                                            <div class="card-bottom-row">
-                                                <div class="rating">
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star-half-alt"></i>
-                                                    <span>4.5/5</span>
-                                                </div>
-                                                <div class="card-buttons">
-                                                    <a href="{% url 'destination_kerala' 'varkala' %}" class="btn-book">Book Tour</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Card 8 - Kumarakom -->
-                            <div class="col-lg-4 col-md-6">
-                                <div class="card-container">
-                                    <div class="destination-card">
-                                        <div class="card-img">
-                                            <img src="{% static 'images/kumarakom.jpg' %}" alt="Kumarakom Backwaters">
-                                        </div>
-                                        <div class="card-body">
-                                            <h3 class="card-title">Kumarakom</h3>
-                                            <p class="card-text">Serene backwater destination with bird sanctuary.</p>
-                                            <div class="card-bottom-row">
-                                                <div class="rating">
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="far fa-star"></i>
-                                                    <span>4.4/5</span>
-                                                </div>
-                                                <div class="card-buttons">
-                                                    <a href="{% url 'destination_kerala' 'kumarakom' %}" class="btn-book">Book Tour</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Card 9 - Thrissur -->
-                            <div class="col-lg-4 col-md-6">
-                                <div class="card-container">
-                                    <div class="destination-card">
-                                        <div class="card-img">
-                                            <img src="{% static 'images/thrissur.jpg' %}" alt="Thrissur Pooram">
-                                        </div>
-                                        <div class="card-body">
-                                            <h3 class="card-title">Thrissur</h3>
-                                            <p class="card-text">Cultural capital of Kerala, famous for Pooram festival.</p>
-                                            <div class="card-bottom-row">
-                                                <div class="rating">
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <span>5.0/5</span>
-                                                </div>
-                                                <div class="card-buttons">
-                                                    <a href="{% url 'destination_kerala' 'thrissur' %}" class="btn-book">Book Tour</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <button class="carousel-control-prev" type="button" data-bs-target="#destinationCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#destinationCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            </div>
-            
-            <div class="d-flex justify-content-center mt-4">
-                <a href="{% url 'all_kerala' %}" class="btn btn-explore view">View More Destinations</a>
-            </div>
-        </div>
-    </section>
-    <!-- Footer -->
-    <section class="features-section" id="features">
-        <div class="container">
-            <div class="section-title">
-                <h2>Why Choose Our Tours</h2>
-            </div>
-            
-            <div class="row">
-                <div class="col-lg-3 col-md-6">
-                    <div class="feature-box">
-                        <div class="feature-icon">
-                            <i class="fas fa-map-marked-alt"></i>
-                        </div>
-                        <h3 class="feature-title">Expert Guides</h3>
-                        <p class="feature-text">Our knowledgeable guides will help you discover hidden gems and share fascinating stories about each location.</p>
-                    </div>
-                </div>
-                
-                <div class="col-lg-3 col-md-6">
-                    <div class="feature-box">
-                        <div class="feature-icon">
-                            <i class="fas fa-utensils"></i>
-                        </div>
-                        <h3 class="feature-title">Authentic Cuisine</h3>
-                        <p class="feature-text">Experience the rich flavors of Tamil Nadu with carefully selected local dining experiences.</p>
-                    </div>
-                </div>
-                
-                <div class="col-lg-3 col-md-6">
-                    <div class="feature-box">
-                        <div class="feature-icon">
-                            <i class="fas fa-hotel"></i>
-                        </div>
-                        <h3 class="feature-title">Quality Accommodation</h3>
-                        <p class="feature-text">Stay in comfortable, well-located hotels that reflect the local character of each destination.</p>
-                    </div>
-                </div>
-                
-                <div class="col-lg-3 col-md-6">
-                    <div class="feature-box">
-                        <div class="feature-icon">
-                            <i class="fas fa-headset"></i>
-                        </div>
-                        <h3 class="feature-title">24/7 Support</h3>
-                        <p class="feature-text">Our dedicated support team is available around the clock to assist you during your journey.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>   
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+  <script>
+    AOS.init();
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Add animation to cards when they come into view
-        document.addEventListener('DOMContentLoaded', function() {
-            const cards = document.querySelectorAll('.destination-card');
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.transition = 'transform 1s';
-                        entry.target.style.transform = 'rotateY(0)';
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.1 });
-            
-            cards.forEach(card => {
-                card.style.transform = 'rotateY(20deg)';
-                observer.observe(card);
-            });
-            
-            // Smooth scrolling for navigation links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    document.querySelector(this.getAttribute('href')).scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                });
-            });
-        });
-    </script>
-    <script>
-         document.addEventListener('DOMContentLoaded', function() {
-        const cards = document.querySelectorAll('.card-container');
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
-        
-        cards.forEach(card => {
-            observer.observe(card);
-        });
+    // Destination coordinates lookup with multiple routes
+    const DESTINATION_COORDINATES = {
+     "Alleppey": { 
+        coords: [9.4981, 76.3388],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.5276, 76.2144], name: "Thrissur"},
+            {coords: [9.4981, 76.3388], name: "Alleppey"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.0889, 76.4965], name: "Kothamangalam"},
+            {coords: [9.8576, 76.3895], name: "Kottayam"},
+            {coords: [9.4981, 76.3388], name: "Alleppey"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.7867, 76.6548], name: "Palakkad"},
+            {coords: [10.0889, 76.4965], name: "Kochi"},
+            {coords: [9.4981, 76.3388], name: "Alleppey"}
+          ]
+        }
+      },
+      "Munnar": { 
+        coords: [10.0889, 77.0595],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.0889, 77.0595], name: "Munnar"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.2205, 77.0629], name: "Marayoor"},
+            {coords: [10.0889, 77.0595], name: "Munnar"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.0889, 76.4965], name: "Kochi"},
+            {coords: [10.0889, 77.0595], name: "Munnar"}
+          ]
+        }
+      },
+      "Kochi": { 
+        coords: [9.9312, 76.2673],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.0889, 76.4965], name: "Kothamangalam"},
+            {coords: [9.9312, 76.2673], name: "Kochi"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.7867, 76.6548], name: "Palakkad"},
+            {coords: [9.9312, 76.2673], name: "Kochi"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.5276, 76.2144], name: "Thrissur"},
+            {coords: [9.9312, 76.2673], name: "Kochi"}
+          ]
+        }
+      },
+      "Kovalam": { 
+        coords: [8.4004, 76.9781],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [8.5241, 76.9366], name: "Trivandrum"},
+            {coords: [8.4004, 76.9781], name: "Kovalam"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.5679, 76.8922], name: "Pathanamthitta"},
+            {coords: [8.4004, 76.9781], name: "Kovalam"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [8.7139, 77.7567], name: "Kanyakumari"},
+            {coords: [8.4004, 76.9781], name: "Kovalam"}
+          ]
+        }
+      },
+      "Thekkady": { 
+        coords: [9.5679, 77.3213],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.5679, 77.3213], name: "Thekkady"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.0889, 77.0595], name: "Munnar"},
+            {coords: [9.5679, 77.3213], name: "Thekkady"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.8576, 76.3895], name: "Kottayam"},
+            {coords: [9.5679, 77.3213], name: "Thekkady"}
+          ]
+        }
+      },
+      "Varkala": { 
+        coords: [8.7333, 76.7167],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [8.7333, 76.7167], name: "Varkala"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.5679, 76.8922], name: "Pathanamthitta"},
+            {coords: [8.7333, 76.7167], name: "Varkala"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [8.5241, 76.9366], name: "Trivandrum"},
+            {coords: [8.7333, 76.7167], name: "Varkala"}
+          ]
+        }
+      },
+      "Wayanad": { 
+        coords: [11.6854, 76.1320],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [11.6854, 76.1320], name: "Wayanad"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [11.2588, 76.3279], name: "Nilambur"},
+            {coords: [11.6854, 76.1320], name: "Wayanad"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [11.0414, 76.0815], name: "Sultan Bathery"},
+            {coords: [11.6854, 76.1320], name: "Wayanad"}
+          ]
+        }
+      },
+      "Bekal": { 
+        coords: [12.3896, 75.0283],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [11.8745, 75.3704], name: "Kannur"},
+            {coords: [12.3896, 75.0283], name: "Bekal"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [11.2588, 76.3279], name: "Nilambur"},
+            {coords: [12.3896, 75.0283], name: "Bekal"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [11.8745, 75.3704], name: "Kannur"},
+            {coords: [12.3896, 75.0283], name: "Bekal"}
+          ]
+        }
+      },
+      "Kumarakom": { 
+        coords: [9.6179, 76.4295],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.8576, 76.3895], name: "Kottayam"},
+            {coords: [9.6179, 76.4295], name: "Kumarakom"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.0889, 76.4965], name: "Kochi"},
+            {coords: [9.6179, 76.4295], name: "Kumarakom"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.4981, 76.3388], name: "Alleppey"},
+            {coords: [9.6179, 76.4295], name: "Kumarakom"}
+          ]
+        }
+      },
+      "Trivandrum": { 
+        coords: [8.5241, 76.9366],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.5679, 76.8922], name: "Pathanamthitta"},
+            {coords: [8.5241, 76.9366], name: "Trivandrum"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [8.7139, 77.7567], name: "Kanyakumari"},
+            {coords: [8.5241, 76.9366], name: "Trivandrum"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.9312, 76.2673], name: "Kochi"},
+            {coords: [8.5241, 76.9366], name: "Trivandrum"}
+          ]
+        }
+      },
+      "Athirappilly": { 
+        coords: [10.2849, 76.5681],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.2849, 76.5681], name: "Athirappilly"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.0889, 76.4965], name: "Kochi"},
+            {coords: [10.2849, 76.5681], name: "Athirappilly"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.5276, 76.2144], name: "Thrissur"},
+            {coords: [10.2849, 76.5681], name: "Athirappilly"}
+          ]
+        }
+      },
+      "Kannur": { 
+        coords: [11.8745, 75.3704],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [11.2588, 76.3279], name: "Nilambur"},
+            {coords: [11.8745, 75.3704], name: "Kannur"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [11.6854, 76.1320], name: "Wayanad"},
+            {coords: [11.8745, 75.3704], name: "Kannur"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [11.0414, 76.0815], name: "Sultan Bathery"},
+            {coords: [11.8745, 75.3704], name: "Kannur"}
+          ]
+        }
+      },
+      "Poovar": { 
+        coords: [8.3143, 77.0682],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [8.5241, 76.9366], name: "Trivandrum"},
+            {coords: [8.3143, 77.0682], name: "Poovar"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [8.7139, 77.7567], name: "Kanyakumari"},
+            {coords: [8.3143, 77.0682], name: "Poovar"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.5679, 76.8922], name: "Pathanamthitta"},
+            {coords: [8.3143, 77.0682], name: "Poovar"}
+          ]
+        }
+      },
+      "Guruvayur": { 
+        coords: [10.5942, 76.0412],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.5276, 76.2144], name: "Thrissur"},
+            {coords: [10.5942, 76.0412], name: "Guruvayur"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.7867, 76.6548], name: "Palakkad"},
+            {coords: [10.5942, 76.0412], name: "Guruvayur"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.0889, 76.4965], name: "Kochi"},
+            {coords: [10.5942, 76.0412], name: "Guruvayur"}
+          ]
+        }
+      },
+      "Idukki": { 
+        coords: [9.8497, 76.9720],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.8497, 76.9720], name: "Idukki"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.0889, 77.0595], name: "Munnar"},
+            {coords: [9.8497, 76.9720], name: "Idukki"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.5679, 77.3213], name: "Thekkady"},
+            {coords: [9.8497, 76.9720], name: "Idukki"}
+          ]
+        }
+      },
+      "Kollam": { 
+        coords: [8.8932, 76.6141],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.5679, 76.8922], name: "Pathanamthitta"},
+            {coords: [8.8932, 76.6141], name: "Kollam"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [8.7139, 77.7567], name: "Kanyakumari"},
+            {coords: [8.8932, 76.6141], name: "Kollam"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.9312, 76.2673], name: "Kochi"},
+            {coords: [8.8932, 76.6141], name: "Kollam"}
+          ]
+        }
+      },
+      "Ashtamudi": { 
+        coords: [8.9667, 76.5667],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.5679, 76.8922], name: "Pathanamthitta"},
+            {coords: [8.9667, 76.5667], name: "Ashtamudi"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [8.7139, 77.7567], name: "Kanyakumari"},
+            {coords: [8.9667, 76.5667], name: "Ashtamudi"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.9312, 76.2673], name: "Kochi"},
+            {coords: [8.9667, 76.5667], name: "Ashtamudi"}
+          ]
+        }
+      },
+      "Marari": { 
+        coords: [9.6225, 76.3008],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.9312, 76.2673], name: "Kochi"},
+            {coords: [9.6225, 76.3008], name: "Marari"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.4981, 76.3388], name: "Alleppey"},
+            {coords: [9.6225, 76.3008], name: "Marari"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.8576, 76.3895], name: "Kottayam"},
+            {coords: [9.6225, 76.3008], name: "Marari"}
+          ]
+        }
+      },
+      "Neyyar": { 
+        coords: [8.5333, 77.1667],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [8.5241, 76.9366], name: "Trivandrum"},
+            {coords: [8.5333, 77.1667], name: "Neyyar"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [8.7139, 77.7567], name: "Kanyakumari"},
+            {coords: [8.5333, 77.1667], name: "Neyyar"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.5679, 76.8922], name: "Pathanamthitta"},
+            {coords: [8.5333, 77.1667], name: "Neyyar"}
+          ]
+        }
+      },
+      "Silent Valley": { 
+        coords: [11.0833, 76.4333],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [11.0833, 76.4333], name: "Silent Valley"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [11.2588, 76.3279], name: "Nilambur"},
+            {coords: [11.0833, 76.4333], name: "Silent Valley"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [11.0414, 76.0815], name: "Sultan Bathery"},
+            {coords: [11.0833, 76.4333], name: "Silent Valley"}
+          ]
+        }
+      },
+      "Ponmudi": { 
+        coords: [8.7596, 77.1199],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [8.5241, 76.9366], name: "Trivandrum"},
+            {coords: [8.7596, 77.1199], name: "Ponmudi"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [8.7139, 77.7567], name: "Kanyakumari"},
+            {coords: [8.7596, 77.1199], name: "Ponmudi"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.5679, 76.8922], name: "Pathanamthitta"},
+            {coords: [8.7596, 77.1199], name: "Ponmudi"}
+          ]
+        }
+      },
+      "Cherai": { 
+        coords: [10.1418, 76.1839],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.0889, 76.4965], name: "Kochi"},
+            {coords: [10.1418, 76.1839], name: "Cherai"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.9312, 76.2673], name: "Kochi"},
+            {coords: [10.1418, 76.1839], name: "Cherai"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.5276, 76.2144], name: "Thrissur"},
+            {coords: [10.1418, 76.1839], name: "Cherai"}
+          ]
+        }
+      },
+      "Thrissur": { 
+        coords: [10.5276, 76.2144],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.5276, 76.2144], name: "Thrissur"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.7867, 76.6548], name: "Palakkad"},
+            {coords: [10.5276, 76.2144], name: "Thrissur"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.0889, 76.4965], name: "Kochi"},
+            {coords: [10.5276, 76.2144], name: "Thrissur"}
+          ]
+        }
+      },
+      "Parambikulam": { 
+        coords: [10.3833, 76.7000],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.3833, 76.7000], name: "Parambikulam"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.0889, 77.0595], name: "Munnar"},
+            {coords: [10.3833, 76.7000], name: "Parambikulam"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.7867, 76.6548], name: "Palakkad"},
+            {coords: [10.3833, 76.7000], name: "Parambikulam"}
+          ]
+        }
+      },
+      "Neyyattinkara": { 
+        coords: [8.4000, 77.0833],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [8.5241, 76.9366], name: "Trivandrum"},
+            {coords: [8.4000, 77.0833], name: "Neyyattinkara"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [8.7139, 77.7567], name: "Kanyakumari"},
+            {coords: [8.4000, 77.0833], name: "Neyyattinkara"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.5679, 76.8922], name: "Pathanamthitta"},
+            {coords: [8.4000, 77.0833], name: "Neyyattinkara"}
+          ]
+        }
+      },
+      "Alappuzha": { 
+        coords: [9.4981, 76.3388],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.5276, 76.2144], name: "Thrissur"},
+            {coords: [9.4981, 76.3388], name: "Alappuzha"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.8576, 76.3895], name: "Kottayam"},
+            {coords: [9.4981, 76.3388], name: "Alappuzha"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.0889, 76.4965], name: "Kochi"},
+            {coords: [9.4981, 76.3388], name: "Alappuzha"}
+          ]
+        }
+      },
+      "Malampuzha": { 
+        coords: [10.8333, 76.6833],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.8333, 76.6833], name: "Malampuzha"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.7867, 76.6548], name: "Palakkad"},
+            {coords: [10.8333, 76.6833], name: "Malampuzha"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.5276, 76.2144], name: "Thrissur"},
+            {coords: [10.8333, 76.6833], name: "Malampuzha"}
+          ]
+        }
+      },
+      "Palakkad": { 
+        coords: [10.7867, 76.6548],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.7867, 76.6548], name: "Palakkad"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.5276, 76.2144], name: "Thrissur"},
+            {coords: [10.7867, 76.6548], name: "Palakkad"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.0889, 76.4965], name: "Kochi"},
+            {coords: [10.7867, 76.6548], name: "Palakkad"}
+          ]
+        }
+      },
+      "Kuttanad": { 
+        coords: [9.4333, 76.4333],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.8576, 76.3895], name: "Kottayam"},
+            {coords: [9.4333, 76.4333], name: "Kuttanad"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.4981, 76.3388], name: "Alleppey"},
+            {coords: [9.4333, 76.4333], name: "Kuttanad"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [10.0889, 76.4965], name: "Kochi"},
+            {coords: [9.4333, 76.4333], name: "Kuttanad"}
+          ]
+        }
+      },
+      "Sabarimala": { 
+        coords: [9.4333, 77.0833],
+        routes: {
+          fastest: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.5679, 76.8922], name: "Pathanamthitta"},
+            {coords: [9.4333, 77.0833], name: "Sabarimala"}
+          ],
+          scenic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.5679, 77.3213], name: "Thekkady"},
+            {coords: [9.4333, 77.0833], name: "Sabarimala"}
+          ],
+          historic: [
+            {coords: [11.0168, 76.9558], name: "Coimbatore"},
+            {coords: [9.9312, 76.2673], name: "Kochi"},
+            {coords: [9.4333, 77.0833], name: "Sabarimala"}
+          ]
+        }
+      }
+
+
+    };
+
+    // Get destination name from page title
+    const destinationName = document.querySelector('.destination-title').textContent.replace(' Tour', '').trim();
+    const destinationInfo = DESTINATION_COORDINATES[destinationName] || { 
+      coords: [13.0827, 80.2707],
+      routes: {
+        fastest: [
+          {coords: [9.9252, 78.1198], name: "Madurai"},
+          {coords: [13.0827, 80.2707], name: "Chennai"}
+        ]
+      }
+    };
+    const destinationCoords = destinationInfo.coords;
+
+    // Initialize the map
+    const startPoint = [9.9252, 78.1198];
+    const map = L.map('map').setView([
+      (startPoint[0] + destinationCoords[0]) / 2,
+      (startPoint[1] + destinationCoords[1]) / 2
+    ], 8);
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    // Create custom icons
+    const redIcon = L.divIcon({
+      className: 'red-icon',
+      iconSize: [20, 20],
+      iconAnchor: [10, 10]
     });
-   
-    </script>
+
+    const waypointIcon = L.divIcon({
+      className: 'waypoint-icon',
+      iconSize: [12, 12],
+      iconAnchor: [6, 6]
+    });
+
+    // Add markers
+    L.marker(startPoint).addTo(map).bindPopup("Starting Point: Madurai");
+    const destinationMarker = L.marker(destinationCoords, { icon: redIcon }).addTo(map);
+
+    // Show route selector if multiple routes are available
+    if (destinationInfo.routes && Object.keys(destinationInfo.routes).length > 1) {
+      document.getElementById('routeSelector').style.display = 'block';
+    }
+
+    // Car marker setup
+    const carElement = document.createElement('div');
+    carElement.className = 'car-marker';
+    carElement.innerHTML = `<img src="{% static 'images/topcarview.png' %}" class="car-icon" />`;
+
+    const carIcon = L.divIcon({
+      html: carElement,
+      className: '',
+      iconSize: [32, 32],
+      iconAnchor: [16, 16],
+    });
+
+    // Animation variables
+    let currentPosition = 0;
+    let currentSpeed = 0;
+    const targetSpeed = 0.5; // Increased speed
+    const acceleration = 0.005; // Faster acceleration
+    let animationId = null;
+    let smoothedRoute = [];
+    let currentRoute = null;
+    let routeControl = null;
+    let waypointMarkers = [];
+    let routePointTags = [];
+    let totalDistance = 0;
+    let lastAngle = 0;
+    const angleSmoothingFactor = 0.2;
+    let lastFrameTime = 0;
+    const targetFPS = 60; // Higher frame rate for smoother animation
+    let hasReachedDestination = false;
+
+    const carMarker = L.marker(startPoint, { icon: carIcon }).addTo(map);
+
+    // Initialize Routing Machine
+    const routingControl = L.Routing.control({
+      waypoints: [],
+      routeWhileDragging: false,
+      show: false,
+      addWaypoints: false,
+      draggableWaypoints: false,
+      fitSelectedRoutes: false,
+      lineOptions: {
+        styles: [{color: '#3498db', opacity: 0.7, weight: 7}]
+      }
+    }).addTo(map);
+
+    // Start the trip
+    fetchRoute();
+
+    // Route selector event listener
+    document.getElementById('routeOption')?.addEventListener('change', function() {
+      const selectedRoute = this.value;
+      if (destinationInfo.routes && destinationInfo.routes[selectedRoute]) {
+        currentRoute = destinationInfo.routes[selectedRoute];
+        processRoute(currentRoute);
+      }
+    });
+
+    function fetchRoute() {
+      if (destinationInfo.routes) {
+        const routeOption = document.getElementById('routeOption')?.value || 'fastest';
+        currentRoute = destinationInfo.routes[routeOption] || destinationInfo.routes.fastest;
+        processRoute(currentRoute);
+      } else {
+        // Use Routing Machine for realistic routes
+        routingControl.setWaypoints([
+          L.latLng(startPoint[0], startPoint[1]),
+          L.latLng(destinationCoords[0], destinationCoords[1])
+        ]);
+        
+        routingControl.on('routesfound', function(e) {
+          const routes = e.routes;
+          const route = routes[0].coordinates.map(coord => [coord.lat, coord.lng]);
+          processRoute([{coords: startPoint, name: "Madurai"}, {coords: destinationCoords, name: destinationName}], route);
+        });
+      }
+    }
+
+    function processRoute(routePoints, coordinates = null) {
+      // Clear existing elements
+      if (routeControl) {
+        map.removeControl(routeControl);
+      }
+      
+      waypointMarkers.forEach(marker => map.removeLayer(marker));
+      waypointMarkers = [];
+      
+      routePointTags.forEach(tag => map.removeLayer(tag));
+      routePointTags = [];
+
+      // Reset animation state
+      hasReachedDestination = false;
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+      }
+
+      // Convert route to array of coordinates if it's an array of objects
+      const routeCoords = coordinates || routePoints.map(point => point.coords || point);
+      const routeNames = routePoints.map(point => point.name || null);
+
+      // Calculate total distance using Routing Machine or fallback
+      if (coordinates) {
+        routingControl.on('routesfound', function(e) {
+          totalDistance = e.routes[0].summary.totalDistance / 1000; // Convert to km
+          updateRouteVisuals(routePoints, routeCoords);
+        });
+      } else {
+        totalDistance = 0;
+        for (let i = 0; i < routeCoords.length - 1; i++) {
+          totalDistance += calculateDistance(
+            routeCoords[i][0], routeCoords[i][1],
+            routeCoords[i+1][0], routeCoords[i+1][1]
+          );
+        }
+        updateRouteVisuals(routePoints, routeCoords);
+      }
+    }
+
+    function updateRouteVisuals(routePoints, routeCoords) {
+      // Add route point tags with distance information
+      let cumulativeDistance = 0;
+      for (let i = 0; i < routePoints.length; i++) {
+        const point = routePoints[i].coords;
+        const name = routePoints[i].name;
+        
+        if (i > 0) {
+          const prevPoint = routePoints[i-1].coords;
+          cumulativeDistance += calculateDistance(
+            prevPoint[0], prevPoint[1],
+            point[0], point[1]
+          );
+        }
+        
+        // Create tag for all route points
+        const isDestination = i === routePoints.length - 1;
+        const tag = L.divIcon({
+          className: `route-point-tag ${isDestination ? 'destination-tag' : ''}`,
+          html: `${name || (isDestination ? 'Destination' : `Point ${i+1}`)} <span class="distance-badge">${Math.round(cumulativeDistance)}km</span>`,
+          iconSize: [100, 30],
+          iconAnchor: [50, 30]
+        });
+        
+        const marker = L.marker(point, { icon: tag, zIndexOffset: 1000 }).addTo(map);
+        routePointTags.push(marker);
+        
+        // Add waypoint markers for intermediate points
+        if (i > 0 && i < routePoints.length - 1) {
+          const marker = L.marker(point, { icon: waypointIcon }).addTo(map);
+          waypointMarkers.push(marker);
+        }
+      }
+
+      // Update destination marker
+      destinationMarker.setPopupContent(
+        `<b>Destination:</b> ${destinationName}<br><b>Total Distance:</b> ${Math.round(totalDistance)}km`
+      );
+
+      // Create curved route using Routing Machine
+      const waypoints = routePoints.map(point => 
+        L.latLng(point.coords[0], point.coords[1])
+      );
+      
+      routeControl = L.Routing.control({
+        waypoints: waypoints,
+        routeWhileDragging: false,
+        show: false,
+        addWaypoints: false,
+        draggableWaypoints: false,
+        fitSelectedRoutes: true,
+        lineOptions: {
+          styles: [{
+            color: getRouteColor(),
+            opacity: 0.7,
+            weight: 7
+          }]
+        }
+      }).addTo(map);
+
+      // Get the actual route coordinates for animation
+      routeControl.on('routesfound', function(e) {
+        const routes = e.routes;
+        smoothedRoute = routes[0].coordinates.map(coord => [coord.lat, coord.lng]);
+        
+        // Reset and start animation
+        if (animationId) {
+          cancelAnimationFrame(animationId);
+        }
+        currentPosition = 0;
+        currentSpeed = 0;
+        lastFrameTime = 0;
+        hasReachedDestination = false;
+        startTrip();
+      });
+    }
+
+    function getRouteColor() {
+      if (!destinationInfo.routes) return '#3498db';
+      
+      const routeOption = document.getElementById('routeOption')?.value || 'fastest';
+      if (routeOption === 'scenic') return '#27ae60';
+      if (routeOption === 'historic') return '#e67e22';
+      return '#3498db';
+    }
+
+    // Haversine formula for distance calculation
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = deg2rad(lat2 - lat1);
+      const dLon = deg2rad(lon2 - lon1);
+      const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+
+    function deg2rad(deg) {
+      return deg * (Math.PI/180);
+    }
+
+    function startTrip() {
+      lastFrameTime = 0;
+      animationId = requestAnimationFrame(animate);
+    }
+
+    function animate(timestamp) {
+      if (!lastFrameTime) lastFrameTime = timestamp;
+      const deltaTime = timestamp - lastFrameTime;
+      
+      if (deltaTime >= 1000 / targetFPS) {
+          lastFrameTime = timestamp;
+          
+          // Speed control
+          if (currentSpeed < targetSpeed) {
+              currentSpeed = Math.min(currentSpeed + acceleration, targetSpeed);
+          }
+          
+          currentPosition += currentSpeed / 1000;
+          
+          if (currentPosition >= 1) {
+              currentPosition = 1;
+              currentSpeed = 0;
+              updateCarPosition(currentPosition);
+              if (!hasReachedDestination) {
+                triggerConfetti();
+                hasReachedDestination = true;
+              }
+              return;
+          }
+          
+          updateCarPosition(currentPosition);
+      }
+      
+      animationId = requestAnimationFrame(animate);
+    }
+
+    function cubicInterpolate(y0, y1, y2, y3, mu) {
+      const mu2 = mu * mu;
+      const a0 = y3 - y2 - y0 + y1;
+      const a1 = y0 - y1 - a0;
+      const a2 = y2 - y0;
+      const a3 = y1;
+      return a0 * mu * mu2 + a1 * mu2 + a2 * mu + a3;
+    }
+
+    function updateCarPosition(progress) {
+      const exactIndex = progress * (smoothedRoute.length - 1);
+      const index = Math.floor(exactIndex);
+      const nextIndex = Math.min(index + 1, smoothedRoute.length - 1);
+      const partialProgress = exactIndex % 1;
+
+      // Use cubic interpolation for smoother movement
+      const prevIndex = Math.max(index - 1, 0);
+      const nextNextIndex = Math.min(index + 2, smoothedRoute.length - 1);
+      
+      const currentPoint = smoothedRoute[index];
+      const nextPoint = smoothedRoute[nextIndex];
+      const prevPoint = smoothedRoute[prevIndex];
+      const nextNextPoint = smoothedRoute[nextNextIndex];
+
+      // Cubic interpolation for latitude
+      const lat = cubicInterpolate(
+          prevPoint[0], currentPoint[0], nextPoint[0], nextNextPoint[0], 
+          partialProgress
+      );
+      
+      // Cubic interpolation for longitude
+      const lng = cubicInterpolate(
+          prevPoint[1], currentPoint[1], nextPoint[1], nextNextPoint[1], 
+          partialProgress
+      );
+
+      // Update car position
+      carMarker.setLatLng([lat, lng]);
+      
+      // Calculate angle between current and next point
+      const rawAngle = calculateAngle(currentPoint, nextPoint);
+      const smoothedAngle = lastAngle + angleSmoothingFactor * (rawAngle - lastAngle);
+      lastAngle = smoothedAngle;
+      
+      // Update car rotation
+      carElement.style.setProperty('--rotation', `${smoothedAngle}deg`);
+      
+      // Smooth panning
+      const bounds = map.getBounds();
+      if (!bounds.contains([lat, lng])) {
+          map.panTo([lat, lng], { animate: true, duration: 0.5 });
+      }
+    }
+
+    function calculateAngle(currentPos, nextPos) {
+      const dx = nextPos[1] - currentPos[1];
+      const dy = nextPos[0] - currentPos[0];
+      return Math.atan2(dx, dy) * 180 / Math.PI;
+    }
+
+    function triggerConfetti() {
+      // Get the destination position on screen
+      const destPoint = map.latLngToContainerPoint(destinationMarker.getLatLng());
+      const x = destPoint.x / map.getSize().x;
+      const y = destPoint.y / map.getSize().y;
+      
+      // Confetti configuration
+      const colors = ['#8e44ad', '#e67e22', '#27ae60', '#3498db', '#f1c40f'];
+      
+      // Create confetti effect
+      const end = Date.now() + 3000; // 3 seconds of confetti
+      
+      (function frame() {
+        // Launch from left side
+        confetti({
+          particleCount: 5,
+          angle: 60,
+          spread: 55,
+          origin: { x, y },
+          colors: colors
+        });
+        
+        // Launch from right side
+        confetti({
+          particleCount: 5,
+          angle: 120,
+          spread: 55,
+          origin: { x, y },
+          colors: colors
+        });
+        
+        // Launch from bottom
+        confetti({
+          particleCount: 5,
+          angle: -90,
+          spread: 55,
+          origin: { x, y },
+          colors: colors
+        });
+        
+        // Continue if we're not done yet
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+        
+        // Open destination popup
+        destinationMarker.openPopup();
+      }());
+    }
+  </script>
 </body>
 </html>
+{% endblock %}
